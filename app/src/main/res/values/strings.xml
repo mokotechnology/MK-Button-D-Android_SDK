@@ -37,9 +37,7 @@
     <string-array name="alarm_notify_type">
         <item>Silent</item>
         <item>LED</item>
-        <item>Vibration</item>
         <item>Buzzer</item>
-        <item>LED+Vibration</item>
         <item>LED+Buzzer</item>
     </string-array>
 </resources>

@@ -55,7 +55,6 @@ public class QuickSwitchActivity extends BaseActivity {
             showSyncingProgressDialog();
             ArrayList<OrderTask> orderTasks = new ArrayList<>();
             orderTasks.add(OrderTaskAssembler.getConnectable());
-            orderTasks.add(OrderTaskAssembler.getButtonPowerEnable());
             orderTasks.add(OrderTaskAssembler.getVerifyPasswordEnable());
             orderTasks.add(OrderTaskAssembler.getButtonResetEnable());
             orderTasks.add(OrderTaskAssembler.getScanResponseEnable());
@@ -111,7 +110,6 @@ public class QuickSwitchActivity extends BaseActivity {
                                 int result = value[4] & 0xFF;
                                 switch (configKeyEnum) {
                                     case KEY_BLE_CONNECTABLE:
-                                    case KEY_BUTTON_POWER_ENABLE:
                                     case KEY_BUTTON_RESET_ENABLE:
                                     case KEY_SCAN_RESPONSE_ENABLE:
                                     case KEY_DISMISS_ALARM_ENABLE:
@@ -132,9 +130,6 @@ public class QuickSwitchActivity extends BaseActivity {
                                 switch (configKeyEnum) {
                                     case KEY_BLE_CONNECTABLE:
                                         setConnectable(result);
-                                        break;
-                                    case KEY_BUTTON_POWER_ENABLE:
-                                        setButtonPower(result);
                                         break;
                                     case KEY_VERIFY_PASSWORD_ENABLE:
                                         setPasswordVerify(result);
@@ -218,13 +213,6 @@ public class QuickSwitchActivity extends BaseActivity {
 
     private boolean enableButtonPower;
 
-    public void setButtonPower(int enable) {
-        this.enableButtonPower = enable == 1;
-        mBind.ivButtonPower.setImageResource(enable == 1 ? R.drawable.ic_checked : R.drawable.ic_unchecked);
-        mBind.tvButtonPower.setText(enableButtonPower ? "Enable" : "Disable");
-        mBind.tvButtonPower.setEnabled(enableButtonPower);
-    }
-
     private boolean enableHWReset;
 
     public void setButtonResetEnable(int enable) {
@@ -273,23 +261,6 @@ public class QuickSwitchActivity extends BaseActivity {
         if (isWindowLocked())
             return;
         setScanResponsePacket(!enableScanResponse);
-    }
-
-    public void onChangeButtonPower(View view) {
-        if (isWindowLocked())
-            return;
-        if (enableButtonPower) {
-            final AlertMessageDialog dialog = new AlertMessageDialog();
-            dialog.setTitle("Warning！");
-            dialog.setMessage("If this function is disabled, you cannot power off the Beacon by button.");
-            dialog.setConfirm(R.string.ok);
-            dialog.setOnAlertConfirmListener(() -> {
-                setButtonPower(false);
-            });
-            dialog.show(getSupportFragmentManager());
-        } else {
-            setButtonPower(true);
-        }
     }
 
     public void onChangeHWReset(View view) {
@@ -350,15 +321,6 @@ public class QuickSwitchActivity extends BaseActivity {
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
         orderTasks.add(OrderTaskAssembler.setConnectable(enable ? 1 : 0));
         orderTasks.add(OrderTaskAssembler.getConnectable());
-        DMokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
-    }
-
-
-    public void setButtonPower(boolean enable) {
-        showSyncingProgressDialog();
-        ArrayList<OrderTask> orderTasks = new ArrayList<>();
-        orderTasks.add(OrderTaskAssembler.setButtonPowerEnable(enable ? 1 : 0));
-        orderTasks.add(OrderTaskAssembler.getButtonPowerEnable());
         DMokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 

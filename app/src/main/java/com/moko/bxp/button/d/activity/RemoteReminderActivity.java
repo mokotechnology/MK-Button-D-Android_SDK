@@ -27,7 +27,6 @@ import java.util.Arrays;
 
 public class RemoteReminderActivity extends BaseActivity {
 
-
     private ActivityRemoteReminderNotifyTypeBinding mBind;
     public boolean isConfigError;
 
@@ -45,7 +44,6 @@ public class RemoteReminderActivity extends BaseActivity {
             ArrayList<OrderTask> orderTasks = new ArrayList<>();
             orderTasks.add(OrderTaskAssembler.getRemoteLEDNotifyAlarmParams());
             orderTasks.add(OrderTaskAssembler.getRemoteBuzzerNotifyAlarmParams());
-            orderTasks.add(OrderTaskAssembler.getRemoteVibrationNotifyAlarmParams());
             DMokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         }
     }
@@ -54,13 +52,10 @@ public class RemoteReminderActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)
     public void onConnectStatusEvent(ConnectStatusEvent event) {
         final String action = event.getAction();
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (MokoConstants.ACTION_DISCONNECTED.equals(action)) {
-                    // 设备断开，通知页面更新
-                    RemoteReminderActivity.this.finish();
-                }
+        runOnUiThread(() -> {
+            if (MokoConstants.ACTION_DISCONNECTED.equals(action)) {
+                // 设备断开，通知页面更新
+                RemoteReminderActivity.this.finish();
             }
         });
     }
@@ -99,7 +94,6 @@ public class RemoteReminderActivity extends BaseActivity {
                                 switch (configKeyEnum) {
                                     case KEY_REMOTE_LED_NOTIFY_ALARM_PARAMS:
                                     case KEY_REMOTE_BUZZER_NOTIFY_ALARM_PARAMS:
-                                    case KEY_REMOTE_VIBRATION_NOTIFY_ALARM_PARAMS:
                                         if (result == 0) {
                                             isConfigError = true;
                                         }
@@ -122,14 +116,6 @@ public class RemoteReminderActivity extends BaseActivity {
                                             mBind.etBlinkingInterval.setText(String.valueOf(interval / 100));
                                         }
                                         break;
-                                    case KEY_REMOTE_VIBRATION_NOTIFY_ALARM_PARAMS:
-                                        if (length == 4) {
-                                            int time = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
-                                            int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 6, 8));
-                                            mBind.etVibratingTime.setText(String.valueOf(time));
-                                            mBind.etVibratingInterval.setText(String.valueOf(interval / 100));
-                                        }
-                                        break;
                                     case KEY_REMOTE_BUZZER_NOTIFY_ALARM_PARAMS:
                                         if (length == 4) {
                                             int time = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
@@ -146,7 +132,6 @@ public class RemoteReminderActivity extends BaseActivity {
             }
         });
     }
-
 
     @Override
     protected void onDestroy() {
@@ -168,9 +153,7 @@ public class RemoteReminderActivity extends BaseActivity {
     }
 
     public void onLedNotifyRemind(View view) {
-        if (isWindowLocked())
-            return;
-
+        if (isWindowLocked()) return;
         if (isLEDValid()) {
             showSyncingProgressDialog();
             String ledTimeStr = mBind.etBlinkingTime.getText().toString();
@@ -179,23 +162,6 @@ public class RemoteReminderActivity extends BaseActivity {
             int ledInterval = Integer.parseInt(ledIntervalStr) * 100;
             ArrayList<OrderTask> orderTasks = new ArrayList<>();
             orderTasks.add(OrderTaskAssembler.setRemoteLEDNotifyAlarmParams(ledTime, ledInterval));
-            DMokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
-        } else {
-            ToastUtils.showToast(this, "Opps！Save failed. Please check the input characters and try again.");
-        }
-    }
-
-    public void onVibrationNotifyRemind(View view) {
-        if (isWindowLocked())
-            return;
-        if (isVibrationValid()) {
-            showSyncingProgressDialog();
-            String vibrationTimeStr = mBind.etVibratingTime.getText().toString();
-            String vibrationIntervalStr = mBind.etVibratingInterval.getText().toString();
-            int vibrationTime = Integer.parseInt(vibrationTimeStr);
-            int vibrationInterval = Integer.parseInt(vibrationIntervalStr) * 100;
-            ArrayList<OrderTask> orderTasks = new ArrayList<>();
-            orderTasks.add(OrderTaskAssembler.setRemoteVibrationNotifyAlarmParams(vibrationTime, vibrationInterval));
             DMokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         } else {
             ToastUtils.showToast(this, "Opps！Save failed. Please check the input characters and try again.");
@@ -249,21 +215,6 @@ public class RemoteReminderActivity extends BaseActivity {
             return false;
         int ledInterval = Integer.parseInt(ledIntervalStr);
         if (ledInterval < 1 || ledInterval > 100)
-            return false;
-        return true;
-    }
-
-    private boolean isVibrationValid() {
-        String vibrationTimeStr = mBind.etVibratingTime.getText().toString();
-        String vibrationIntervalStr = mBind.etVibratingInterval.getText().toString();
-        if (TextUtils.isEmpty(vibrationTimeStr) || TextUtils.isEmpty(vibrationIntervalStr)) {
-            return false;
-        }
-        int vibrationTime = Integer.parseInt(vibrationTimeStr);
-        if (vibrationTime < 1 || vibrationTime > 6000)
-            return false;
-        int vibrationInterval = Integer.parseInt(vibrationIntervalStr);
-        if (vibrationInterval < 1 || vibrationInterval > 100)
             return false;
         return true;
     }

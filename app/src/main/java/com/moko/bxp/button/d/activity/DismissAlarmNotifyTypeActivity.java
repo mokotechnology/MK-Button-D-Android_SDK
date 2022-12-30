@@ -29,7 +29,6 @@ import java.util.Arrays;
 public class DismissAlarmNotifyTypeActivity extends BaseActivity {
 
     private ActivityDismissAlarmNotifyTypeBinding mBind;
-    private String[] dismissAlarmNotifyTypeArray;
     public boolean isConfigError;
     public int notifyType;
 
@@ -39,24 +38,20 @@ public class DismissAlarmNotifyTypeActivity extends BaseActivity {
         mBind = ActivityDismissAlarmNotifyTypeBinding.inflate(getLayoutInflater());
         setContentView(mBind.getRoot());
 
-        dismissAlarmNotifyTypeArray = getResources().getStringArray(R.array.alarm_notify_type);
+        String[] dismissAlarmNotifyTypeArray = getResources().getStringArray(R.array.alarm_notify_type);
         mBind.npvNotifyType.setDisplayedValues(dismissAlarmNotifyTypeArray);
         mBind.npvNotifyType.setMinValue(0);
         mBind.npvNotifyType.setMaxValue(dismissAlarmNotifyTypeArray.length - 1);
         mBind.npvNotifyType.setValue(notifyType);
         mBind.npvNotifyType.setOnValueChangedListener((picker, oldVal, newVal) -> {
             notifyType = newVal;
-            if (notifyType == 1 || notifyType == 4 || notifyType == 5) {
+            if (newVal == 2) notifyType = newVal + 1;
+            if (newVal == 3) notifyType = newVal + 2;
+            if (notifyType == 1 || notifyType == 5) {
                 // LED/LED+Vibration/LED+Buzzer
                 mBind.clLedNotify.setVisibility(View.VISIBLE);
             } else {
                 mBind.clLedNotify.setVisibility(View.GONE);
-            }
-            if (notifyType == 2 || notifyType == 4) {
-                // Vibration/LED+Vibration
-                mBind.clVibrationNotify.setVisibility(View.VISIBLE);
-            } else {
-                mBind.clVibrationNotify.setVisibility(View.GONE);
             }
             if (notifyType == 3 || notifyType == 5) {
                 // Buzzer/LED+Buzzer
@@ -76,7 +71,6 @@ public class DismissAlarmNotifyTypeActivity extends BaseActivity {
             orderTasks.add(OrderTaskAssembler.getDismissAlarmType());
             orderTasks.add(OrderTaskAssembler.getDismissLEDNotifyAlarmParams());
             orderTasks.add(OrderTaskAssembler.getDismissBuzzerNotifyAlarmParams());
-            orderTasks.add(OrderTaskAssembler.getDismissVibrationNotifyAlarmParams());
             DMokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         }
     }
@@ -85,13 +79,10 @@ public class DismissAlarmNotifyTypeActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)
     public void onConnectStatusEvent(ConnectStatusEvent event) {
         final String action = event.getAction();
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (MokoConstants.ACTION_DISCONNECTED.equals(action)) {
-                    // 设备断开，通知页面更新
-                    DismissAlarmNotifyTypeActivity.this.finish();
-                }
+        runOnUiThread(() -> {
+            if (MokoConstants.ACTION_DISCONNECTED.equals(action)) {
+                // 设备断开，通知页面更新
+                DismissAlarmNotifyTypeActivity.this.finish();
             }
         });
     }
@@ -130,7 +121,6 @@ public class DismissAlarmNotifyTypeActivity extends BaseActivity {
                                 switch (configKeyEnum) {
                                     case KEY_DISMISS_LED_NOTIFY_ALARM_PARAMS:
                                     case KEY_DISMISS_BUZZER_NOTIFY_ALARM_PARAMS:
-                                    case KEY_DISMISS_VIBRATION_NOTIFY_ALARM_PARAMS:
                                         if (result == 0) {
                                             isConfigError = true;
                                         }
@@ -154,18 +144,15 @@ public class DismissAlarmNotifyTypeActivity extends BaseActivity {
                                     case KEY_DISMISS_ALARM_TYPE:
                                         if (length == 1) {
                                             notifyType = value[4] & 0xFF;
-                                            mBind.npvNotifyType.setValue(notifyType);
-                                            if (notifyType == 1 || notifyType == 4 || notifyType == 5) {
+                                            int type = notifyType;
+                                            if (notifyType == 3) type = notifyType - 1;
+                                            if (notifyType == 5) type = notifyType - 2;
+                                            mBind.npvNotifyType.setValue(type);
+                                            if (notifyType == 1 || notifyType == 5) {
                                                 // LED/LED+Vibration/LED+Buzzer
                                                 mBind.clLedNotify.setVisibility(View.VISIBLE);
                                             } else {
                                                 mBind.clLedNotify.setVisibility(View.GONE);
-                                            }
-                                            if (notifyType == 2 || notifyType == 4) {
-                                                // Vibration/LED+Vibration
-                                                mBind.clVibrationNotify.setVisibility(View.VISIBLE);
-                                            } else {
-                                                mBind.clVibrationNotify.setVisibility(View.GONE);
                                             }
                                             if (notifyType == 3 || notifyType == 5) {
                                                 // Buzzer/LED+Buzzer
@@ -181,14 +168,6 @@ public class DismissAlarmNotifyTypeActivity extends BaseActivity {
                                             int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 6, 8));
                                             mBind.etBlinkingTime.setText(String.valueOf(time));
                                             mBind.etBlinkingInterval.setText(String.valueOf(interval / 100));
-                                        }
-                                        break;
-                                    case KEY_DISMISS_VIBRATION_NOTIFY_ALARM_PARAMS:
-                                        if (length == 4) {
-                                            int time = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
-                                            int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 6, 8));
-                                            mBind.etVibratingTime.setText(String.valueOf(time));
-                                            mBind.etVibratingInterval.setText(String.valueOf(interval / 100));
                                         }
                                         break;
                                     case KEY_DISMISS_BUZZER_NOTIFY_ALARM_PARAMS:
@@ -254,21 +233,13 @@ public class DismissAlarmNotifyTypeActivity extends BaseActivity {
 
     private void saveParams() {
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
-        if (notifyType == 1 || notifyType == 4 || notifyType == 5) {
+        if (notifyType == 1 || notifyType == 5) {
             String ledTimeStr = mBind.etBlinkingTime.getText().toString();
             String ledIntervalStr = mBind.etBlinkingInterval.getText().toString();
             int ledTime = Integer.parseInt(ledTimeStr);
             int ledInterval = Integer.parseInt(ledIntervalStr) * 100;
             // LED/LED+Vibration/LED+Buzzer
             orderTasks.add(OrderTaskAssembler.setDismissLEDNotifyAlarmParams(ledTime, ledInterval));
-        }
-        if (notifyType == 2 || notifyType == 4) {
-            String vibrationTimeStr = mBind.etVibratingTime.getText().toString();
-            String vibrationIntervalStr = mBind.etVibratingInterval.getText().toString();
-            int vibrationTime = Integer.parseInt(vibrationTimeStr);
-            int vibrationInterval = Integer.parseInt(vibrationIntervalStr) * 100;
-            // Vibration/LED+Vibration
-            orderTasks.add(OrderTaskAssembler.setDismissVibrationNotifyAlarmParams(vibrationTime, vibrationInterval));
         }
         if (notifyType == 3 || notifyType == 5) {
             String buzzerTimeStr = mBind.etRingingTime.getText().toString();
@@ -283,15 +254,12 @@ public class DismissAlarmNotifyTypeActivity extends BaseActivity {
     }
 
     private boolean isValid() {
-        if (notifyType == 0)
-            return true;
+        if (notifyType == 0) return true;
         String ledTimeStr = mBind.etBlinkingTime.getText().toString();
         String ledIntervalStr = mBind.etBlinkingInterval.getText().toString();
-        String vibrationTimeStr = mBind.etVibratingTime.getText().toString();
-        String vibrationIntervalStr = mBind.etVibratingInterval.getText().toString();
         String buzzerTimeStr = mBind.etRingingTime.getText().toString();
         String buzzerIntervalStr = mBind.etRingingInterval.getText().toString();
-        if (notifyType == 1 || notifyType == 4 || notifyType == 5) {
+        if (notifyType == 1 || notifyType == 5) {
             if (TextUtils.isEmpty(ledTimeStr) || TextUtils.isEmpty(ledIntervalStr)) {
                 return false;
             }
@@ -300,17 +268,6 @@ public class DismissAlarmNotifyTypeActivity extends BaseActivity {
                 return false;
             int ledInterval = Integer.parseInt(ledIntervalStr);
             if (ledInterval < 1 || ledInterval > 100)
-                return false;
-        }
-        if (notifyType == 2 || notifyType == 4) {
-            if (TextUtils.isEmpty(vibrationTimeStr) || TextUtils.isEmpty(vibrationIntervalStr)) {
-                return false;
-            }
-            int vibrationTime = Integer.parseInt(vibrationTimeStr);
-            if (vibrationTime < 1 || vibrationTime > 6000)
-                return false;
-            int vibrationInterval = Integer.parseInt(vibrationIntervalStr);
-            if (vibrationInterval < 1 || vibrationInterval > 100)
                 return false;
         }
         if (notifyType == 3 || notifyType == 5) {

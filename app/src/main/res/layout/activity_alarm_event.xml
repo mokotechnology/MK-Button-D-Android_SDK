@@ -46,81 +46,25 @@
             android:orientation="vertical"
             android:padding="10dp">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/shape_radius_white_bg"
-                android:padding="10dp">
-
-                <TextView
-                    android:id="@+id/update_date_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="Sync standard UTC time"
-                    android:textColor="@color/black_333333"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv_sync"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:background="@drawable/shape_radius_blue_btn_bg"
-                    android:clickable="true"
-                    android:onClick="onSyncUTCTime"
-                    android:paddingLeft="10dp"
-                    android:paddingTop="5dp"
-                    android:paddingRight="10dp"
-                    android:paddingBottom="5dp"
-                    android:text="Sync"
-                    android:textColor="@color/white_ffffff"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/tv_utc_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/update_date_title"
-                    android:layout_marginTop="20dp"
-                    android:text=""
-                    android:textColor="@color/black_333333"
-                    android:textSize="15sp" />
-            </RelativeLayout>
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:background="@drawable/shape_radius_white_bg"
                 android:padding="10dp">
-
-                <TextView
-                    android:id="@+id/alarm_event"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Alarm event data"
-                    android:textColor="@color/black_333333"
-                    android:textSize="17sp"
-                    android:textStyle="bold"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
 
                 <TextView
                     android:id="@+id/tv_single_press_event_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="50dp"
                     android:layout_marginBottom="10dp"
                     android:gravity="center"
                     android:text="0"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp"
-                    app:layout_constraintBottom_toTopOf="@id/tv_clear_single_press_event"
-                    app:layout_constraintLeft_toLeftOf="@id/tv_clear_single_press_event"
-                    app:layout_constraintRight_toRightOf="@id/tv_clear_single_press_event" />
-
+                    app:layout_constraintBottom_toBottomOf="@+id/tvSingle"
+                    app:layout_constraintLeft_toRightOf="@+id/tvSingle"
+                    app:layout_constraintTop_toTopOf="@+id/tvSingle" />
 
                 <TextView
                     android:id="@+id/tv_clear_single_press_event"
@@ -137,56 +81,39 @@
                     android:text="Clear"
                     android:textColor="@color/white_ffffff"
                     android:textSize="15sp"
-                    app:layout_constraintBaseline_toBaselineOf="@id/tv_export_single_press_event"
-                    app:layout_constraintRight_toLeftOf="@id/tv_export_single_press_event" />
-
-                <TextView
-                    android:id="@+id/tv_export_single_press_event"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="50dp"
-                    android:background="@drawable/shape_radius_blue_btn_bg"
-                    android:clickable="true"
-                    android:gravity="center"
-                    android:minWidth="60dp"
-                    android:minHeight="30dp"
-                    android:onClick="onExportSinglePressEvent"
-                    android:text="Export"
-                    android:textColor="@color/white_ffffff"
-                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvSingle"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/alarm_event" />
+                    app:layout_constraintTop_toTopOf="@+id/tvSingle" />
 
                 <TextView
+                    android:id="@+id/tvSingle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingTop="30dp"
+                    android:paddingBottom="30dp"
                     android:text="Single press event count"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_clear_single_press_event"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/tv_single_press_event_count" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <View
+                    android:id="@+id/lineSingle"
                     style="@style/divider_line"
-                    android:layout_marginTop="10dp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_export_single_press_event" />
+                    app:layout_constraintTop_toBottomOf="@id/tvSingle" />
 
                 <TextView
                     android:id="@+id/tv_double_press_event_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:gravity="center"
                     android:text="0"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp"
-                    app:layout_constraintBottom_toTopOf="@id/tv_clear_double_press_event"
-                    app:layout_constraintLeft_toLeftOf="@id/tv_clear_double_press_event"
-                    app:layout_constraintRight_toRightOf="@id/tv_clear_double_press_event" />
+                    app:layout_constraintBottom_toBottomOf="@+id/tvDouble"
+                    app:layout_constraintLeft_toLeftOf="@+id/tv_single_press_event_count"
+                    app:layout_constraintTop_toTopOf="@+id/tvDouble" />
 
 
                 <TextView
@@ -204,43 +131,29 @@
                     android:text="Clear"
                     android:textColor="@color/white_ffffff"
                     android:textSize="15sp"
-                    app:layout_constraintBaseline_toBaselineOf="@id/tv_export_double_press_event"
-                    app:layout_constraintRight_toLeftOf="@id/tv_export_double_press_event" />
-
-                <TextView
-                    android:id="@+id/tv_export_double_press_event"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="60dp"
-                    android:background="@drawable/shape_radius_blue_btn_bg"
-                    android:clickable="true"
-                    android:gravity="center"
-                    android:minWidth="60dp"
-                    android:minHeight="30dp"
-                    android:onClick="onExportDoublePressEvent"
-                    android:text="Export"
-                    android:textColor="@color/white_ffffff"
-                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvDouble"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_export_single_press_event" />
+                    app:layout_constraintTop_toTopOf="@+id/tvDouble" />
 
                 <TextView
+                    android:id="@+id/tvDouble"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingTop="30dp"
+                    android:paddingBottom="30dp"
                     android:text="Double press event count"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_export_double_press_event"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/tv_double_press_event_count" />
+                    app:layout_constraintTop_toBottomOf="@+id/lineSingle" />
 
                 <View
+                    android:id="@+id/lineDouble"
                     style="@style/divider_line"
                     android:layout_marginTop="10dp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_export_double_press_event" />
+                    app:layout_constraintTop_toBottomOf="@id/tvDouble" />
 
                 <TextView
                     android:id="@+id/tv_long_press_event_count"
@@ -251,9 +164,9 @@
                     android:text="0"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp"
-                    app:layout_constraintBottom_toTopOf="@id/tv_clear_long_press_event"
-                    app:layout_constraintLeft_toLeftOf="@id/tv_clear_long_press_event"
-                    app:layout_constraintRight_toRightOf="@id/tv_clear_long_press_event" />
+                    app:layout_constraintBottom_toBottomOf="@+id/tvLong"
+                    app:layout_constraintLeft_toLeftOf="@+id/tv_double_press_event_count"
+                    app:layout_constraintTop_toTopOf="@+id/tvLong" />
 
 
                 <TextView
@@ -271,36 +184,21 @@
                     android:text="Clear"
                     android:textColor="@color/white_ffffff"
                     android:textSize="15sp"
-                    app:layout_constraintBaseline_toBaselineOf="@id/tv_export_long_press_event"
-                    app:layout_constraintRight_toLeftOf="@id/tv_export_long_press_event" />
-
-                <TextView
-                    android:id="@+id/tv_export_long_press_event"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="60dp"
-                    android:background="@drawable/shape_radius_blue_btn_bg"
-                    android:clickable="true"
-                    android:gravity="center"
-                    android:minWidth="60dp"
-                    android:minHeight="30dp"
-                    android:onClick="onExportLongPressEvent"
-                    android:text="Export"
-                    android:textColor="@color/white_ffffff"
-                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvLong"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_export_double_press_event" />
+                    app:layout_constraintTop_toTopOf="@+id/tvLong" />
 
                 <TextView
+                    android:id="@+id/tvLong"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingTop="30dp"
+                    android:paddingBottom="30dp"
                     android:text="Long press event count"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_export_long_press_event"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/tv_long_press_event_count" />
+                    app:layout_constraintTop_toBottomOf="@+id/lineDouble" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </ScrollView>

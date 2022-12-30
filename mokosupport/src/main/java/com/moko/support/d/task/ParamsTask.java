@@ -31,7 +31,7 @@ public class ParamsTask extends OrderTask {
             case KEY_BLE_CONNECTABLE:
 //            case KEY_MODIFY_PASSWORD:
             case KEY_EFFECTIVE_CLICK_INTERVAL:
-            case KEY_BUTTON_POWER_ENABLE:
+//            case KEY_BUTTON_POWER_ENABLE:
             case KEY_SCAN_RESPONSE_ENABLE:
             case KEY_CHANGE_PASSWORD_DISCONNECT_ENABLE:
             case KEY_BUTTON_RESET_ENABLE:
@@ -46,15 +46,15 @@ public class ParamsTask extends OrderTask {
 //            case KEY_SLOT_VIBRATION_NOTIFY_ALARM_PARAMS:
 //            case KEY_SLOT_BUZZER_NOTIFY_ALARM_PARAMS:
             case KEY_REMOTE_LED_NOTIFY_ALARM_PARAMS:
-            case KEY_REMOTE_VIBRATION_NOTIFY_ALARM_PARAMS:
+//            case KEY_REMOTE_VIBRATION_NOTIFY_ALARM_PARAMS:
             case KEY_REMOTE_BUZZER_NOTIFY_ALARM_PARAMS:
             case KEY_DISMISS_ALARM_ENABLE:
             case KEY_DISMISS_LED_NOTIFY_ALARM_PARAMS:
-            case KEY_DISMISS_VIBRATION_NOTIFY_ALARM_PARAMS:
+//            case KEY_DISMISS_VIBRATION_NOTIFY_ALARM_PARAMS:
             case KEY_DISMISS_BUZZER_NOTIFY_ALARM_PARAMS:
             case KEY_DISMISS_ALARM_TYPE:
             case KEY_BATTERY_VOLTAGE:
-            case KEY_SYSTEM_TIME:
+//            case KEY_SYSTEM_TIME:
             case KEY_DEVICE_ID:
             case KEY_DEVICE_NAME:
             case KEY_SINGLE_PRESS_EVENTS:
@@ -125,17 +125,6 @@ public class ParamsTask extends OrderTask {
                 (byte) 0x02,
                 paramsBytes[0],
                 paramsBytes[1],
-        };
-        response.responseValue = data;
-    }
-
-    public void setButtonPowerEnable(@IntRange(from = 0, to = 1) int enable) {
-        data = new byte[]{
-                (byte) 0xEA,
-                (byte) 0x01,
-                (byte) ParamsKeyEnum.KEY_BUTTON_POWER_ENABLE.getParamsKey(),
-                (byte) 0x01,
-                (byte) enable
         };
         response.responseValue = data;
     }
@@ -357,35 +346,35 @@ public class ParamsTask extends OrderTask {
         response.responseValue = data;
     }
 
-    public void getSlotVibrationNotifyAlarmParams(@IntRange(from = 0, to = 3) int slot) {
-        data = new byte[]{
-                (byte) 0xEA,
-                (byte) 0x00,
-                (byte) ParamsKeyEnum.KEY_SLOT_VIBRATION_NOTIFY_ALARM_PARAMS.getParamsKey(),
-                (byte) 0x01,
-                (byte) slot
-        };
-        response.responseValue = data;
-    }
-
-    public void setSlotVibrationNotifyAlarmParams(@IntRange(from = 0, to = 3) int slot,
-                                                  @IntRange(from = 1, to = 6000) int time,
-                                                  @IntRange(from = 100, to = 10000) int interval) {
-        byte[] timeBytes = MokoUtils.toByteArray(time, 2);
-        byte[] intervalBytes = MokoUtils.toByteArray(interval, 2);
-        data = new byte[]{
-                (byte) 0xEA,
-                (byte) 0x01,
-                (byte) ParamsKeyEnum.KEY_SLOT_VIBRATION_NOTIFY_ALARM_PARAMS.getParamsKey(),
-                (byte) 0x05,
-                (byte) slot,
-                timeBytes[0],
-                timeBytes[1],
-                intervalBytes[0],
-                intervalBytes[1],
-        };
-        response.responseValue = data;
-    }
+//    public void getSlotVibrationNotifyAlarmParams(@IntRange(from = 0, to = 3) int slot) {
+//        data = new byte[]{
+//                (byte) 0xEA,
+//                (byte) 0x00,
+//                (byte) ParamsKeyEnum.KEY_SLOT_VIBRATION_NOTIFY_ALARM_PARAMS.getParamsKey(),
+//                (byte) 0x01,
+//                (byte) slot
+//        };
+//        response.responseValue = data;
+//    }
+//
+//    public void setSlotVibrationNotifyAlarmParams(@IntRange(from = 0, to = 3) int slot,
+//                                                  @IntRange(from = 1, to = 6000) int time,
+//                                                  @IntRange(from = 100, to = 10000) int interval) {
+//        byte[] timeBytes = MokoUtils.toByteArray(time, 2);
+//        byte[] intervalBytes = MokoUtils.toByteArray(interval, 2);
+//        data = new byte[]{
+//                (byte) 0xEA,
+//                (byte) 0x01,
+//                (byte) ParamsKeyEnum.KEY_SLOT_VIBRATION_NOTIFY_ALARM_PARAMS.getParamsKey(),
+//                (byte) 0x05,
+//                (byte) slot,
+//                timeBytes[0],
+//                timeBytes[1],
+//                intervalBytes[0],
+//                intervalBytes[1],
+//        };
+//        response.responseValue = data;
+//    }
 
     public void getSlotBuzzerNotifyAlarmParams(@IntRange(from = 0, to = 3) int slot) {
         data = new byte[]{
@@ -425,23 +414,6 @@ public class ParamsTask extends OrderTask {
                 (byte) 0xEA,
                 (byte) 0x01,
                 (byte) ParamsKeyEnum.KEY_REMOTE_LED_NOTIFY_ALARM_PARAMS.getParamsKey(),
-                (byte) 0x04,
-                timeBytes[0],
-                timeBytes[1],
-                intervalBytes[0],
-                intervalBytes[1],
-        };
-        response.responseValue = data;
-    }
-
-    public void setRemoteVibrationNotifyAlarmParams(@IntRange(from = 1, to = 6000) int time,
-                                                    @IntRange(from = 100, to = 10000) int interval) {
-        byte[] timeBytes = MokoUtils.toByteArray(time, 2);
-        byte[] intervalBytes = MokoUtils.toByteArray(interval, 2);
-        data = new byte[]{
-                (byte) 0xEA,
-                (byte) 0x01,
-                (byte) ParamsKeyEnum.KEY_REMOTE_VIBRATION_NOTIFY_ALARM_PARAMS.getParamsKey(),
                 (byte) 0x04,
                 timeBytes[0],
                 timeBytes[1],
@@ -496,23 +468,6 @@ public class ParamsTask extends OrderTask {
         response.responseValue = data;
     }
 
-    public void setDismissVibrationNotifyAlarmParams(@IntRange(from = 1, to = 6000) int time,
-                                                     @IntRange(from = 100, to = 10000) int interval) {
-        byte[] timeBytes = MokoUtils.toByteArray(time, 2);
-        byte[] intervalBytes = MokoUtils.toByteArray(interval, 2);
-        data = new byte[]{
-                (byte) 0xEA,
-                (byte) 0x01,
-                (byte) ParamsKeyEnum.KEY_DISMISS_VIBRATION_NOTIFY_ALARM_PARAMS.getParamsKey(),
-                (byte) 0x04,
-                timeBytes[0],
-                timeBytes[1],
-                intervalBytes[0],
-                intervalBytes[1],
-        };
-        response.responseValue = data;
-    }
-
     public void setDismissBuzzerNotifyAlarmParams(@IntRange(from = 1, to = 6000) int time,
                                                   @IntRange(from = 100, to = 10000) int interval) {
         byte[] timeBytes = MokoUtils.toByteArray(time, 2);
@@ -538,24 +493,6 @@ public class ParamsTask extends OrderTask {
                 (byte) 0x01,
                 (byte) type
         };
-        response.responseValue = data;
-    }
-
-    public void setSystemTime() {
-        Calendar calendar = Calendar.getInstance();
-        TimeZone timeZone = TimeZone.getTimeZone("GMT");
-        calendar.setTimeZone(timeZone);
-        long unixTime = calendar.getTimeInMillis();
-        byte[] unixTimeBytes = ByteBuffer.allocate(Long.SIZE / Byte.SIZE).putLong(unixTime).array();
-        int length = unixTimeBytes.length;
-        data = new byte[length + 4];
-        data[0] = (byte) 0xEA;
-        data[1] = 0x01;
-        data[2] = (byte) ParamsKeyEnum.KEY_SYSTEM_TIME.getParamsKey();
-        data[3] = (byte) length;
-        for (int i = 0; i < unixTimeBytes.length; i++) {
-            data[i + 4] = unixTimeBytes[i];
-        }
         response.responseValue = data;
     }
 

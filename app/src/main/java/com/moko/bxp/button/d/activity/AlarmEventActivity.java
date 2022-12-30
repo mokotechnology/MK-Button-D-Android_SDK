@@ -1,6 +1,5 @@
 package com.moko.bxp.button.d.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -10,11 +9,9 @@ import com.moko.ble.lib.event.OrderTaskResponseEvent;
 import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
-import com.moko.bxp.button.d.AppConstants;
 import com.moko.bxp.button.d.databinding.ActivityAlarmEventBinding;
 import com.moko.bxp.button.d.dialog.LoadingMessageDialog;
 import com.moko.bxp.button.d.utils.ToastUtils;
-import com.moko.bxp.button.d.utils.Utils;
 import com.moko.support.d.DMokoSupport;
 import com.moko.support.d.OrderTaskAssembler;
 import com.moko.support.d.entity.OrderCHAR;
@@ -24,14 +21,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 
 public class AlarmEventActivity extends BaseActivity {
-
-
     private ActivityAlarmEventBinding mBind;
 
     @Override
@@ -47,7 +40,6 @@ public class AlarmEventActivity extends BaseActivity {
         } else {
             showSyncingProgressDialog();
             ArrayList<OrderTask> orderTasks = new ArrayList<>();
-            orderTasks.add(OrderTaskAssembler.getSystemTime());
             orderTasks.add(OrderTaskAssembler.getSinglePressEventCount());
             orderTasks.add(OrderTaskAssembler.getDoublePressEventCount());
             orderTasks.add(OrderTaskAssembler.getLongPressEventCount());
@@ -59,13 +51,10 @@ public class AlarmEventActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)
     public void onConnectStatusEvent(ConnectStatusEvent event) {
         final String action = event.getAction();
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (MokoConstants.ACTION_DISCONNECTED.equals(action)) {
-                    // 设备断开，通知页面更新
-                    AlarmEventActivity.this.finish();
-                }
+        runOnUiThread(() -> {
+            if (MokoConstants.ACTION_DISCONNECTED.equals(action)) {
+                // 设备断开，通知页面更新
+                AlarmEventActivity.this.finish();
             }
         });
     }
@@ -138,28 +127,11 @@ public class AlarmEventActivity extends BaseActivity {
                                             }
                                         }
                                         break;
-                                    case KEY_SYSTEM_TIME:
-                                        if (result == 0) {
-                                            ToastUtils.showToast(AlarmEventActivity.this, "Opps！Save failed. Please check the input characters and try again.");
-                                        } else {
-                                            ToastUtils.showToast(AlarmEventActivity.this, "Success！");
-                                        }
-                                        break;
                                 }
                             }
                             if (flag == 0x00) {
                                 // read
                                 switch (configKeyEnum) {
-                                    case KEY_SYSTEM_TIME:
-                                        if (length == 8) {
-                                            byte[] timeBytes = Arrays.copyOfRange(value, 4, 4 + length);
-                                            ByteBuffer byteBuffer = ByteBuffer.allocate(Long.SIZE / Byte.SIZE).put(timeBytes, 0, timeBytes.length);
-                                            byteBuffer.flip();
-                                            long time = byteBuffer.getLong();
-                                            Calendar calendar = Utils.getCalenderFromTime(time);
-                                            mBind.tvUtcTime.setText(Utils.calendar2strDateGMT(calendar, AppConstants.PATTERN_YYYY_MM_DD_T_HH_MM_SS_Z));
-                                        }
-                                        break;
                                     case KEY_SINGLE_PRESS_EVENTS:
                                         if (length == 2) {
                                             int count = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 4 + length));
@@ -188,7 +160,6 @@ public class AlarmEventActivity extends BaseActivity {
         });
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -208,19 +179,8 @@ public class AlarmEventActivity extends BaseActivity {
             mLoadingMessageDialog.dismissAllowingStateLoss();
     }
 
-
     public void onBack(View view) {
         finish();
-    }
-
-    public void onSyncUTCTime(View view) {
-        if (isWindowLocked())
-            return;
-        showSyncingProgressDialog();
-        ArrayList<OrderTask> orderTasks = new ArrayList<>();
-        orderTasks.add(OrderTaskAssembler.setSystemTime());
-        orderTasks.add(OrderTaskAssembler.getSystemTime());
-        DMokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 
     public void onClearSinglePressEvent(View view) {
@@ -230,14 +190,6 @@ public class AlarmEventActivity extends BaseActivity {
         DMokoSupport.getInstance().sendOrder(OrderTaskAssembler.setSinglePressEventClear());
     }
 
-    public void onExportSinglePressEvent(View view) {
-        if (isWindowLocked())
-            return;
-        Intent intent = new Intent(this, ExportDataActivity.class);
-        intent.putExtra(AppConstants.EXTRA_KEY_SLOT_TYPE, 0);
-        startActivity(intent);
-    }
-
     public void onClearDoublePressEvent(View view) {
         if (isWindowLocked())
             return;
@@ -245,27 +197,10 @@ public class AlarmEventActivity extends BaseActivity {
         DMokoSupport.getInstance().sendOrder(OrderTaskAssembler.setDoublePressEventClear());
     }
 
-    public void onExportDoublePressEvent(View view) {
-        if (isWindowLocked())
-            return;
-        Intent intent = new Intent(this, ExportDataActivity.class);
-        intent.putExtra(AppConstants.EXTRA_KEY_SLOT_TYPE, 1);
-        startActivity(intent);
-    }
-
-
     public void onClearLongPressEvent(View view) {
         if (isWindowLocked())
             return;
         showSyncingProgressDialog();
         DMokoSupport.getInstance().sendOrder(OrderTaskAssembler.setLongPressEventClear());
-    }
-
-    public void onExportLongPressEvent(View view) {
-        if (isWindowLocked())
-            return;
-        Intent intent = new Intent(this, ExportDataActivity.class);
-        intent.putExtra(AppConstants.EXTRA_KEY_SLOT_TYPE, 2);
-        startActivity(intent);
     }
 }

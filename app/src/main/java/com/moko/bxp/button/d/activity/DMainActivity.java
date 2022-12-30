@@ -16,6 +16,10 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.elvishew.xlog.XLog;
 import com.moko.ble.lib.MokoConstants;
@@ -56,13 +60,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
-
 public class DMainActivity extends BaseActivity implements MokoScanDeviceCallback, BaseQuickAdapter.OnItemChildClickListener {
-
     private ActivityMainBinding mBind;
     private boolean mReceiverTag = false;
     private ConcurrentHashMap<String, AdvInfo> advInfoHashMap;
@@ -123,8 +121,7 @@ public class DMainActivity extends BaseActivity implements MokoScanDeviceCallbac
         }
     }
 
-    private String unLockResponse;
-    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -231,6 +228,7 @@ public class DMainActivity extends BaseActivity implements MokoScanDeviceCallbac
                                         mSavedPassword = mPassword;
                                         SPUtiles.setStringValue(this, AppConstants.SP_KEY_SAVED_PASSWORD, mSavedPassword);
                                         XLog.i("Success");
+                                        DMokoSupport.getInstance().sendOrder(OrderTaskAssembler.getSoftwareVersion());
                                     } else {
                                         dismissLoadingMessageDialog();
                                         isPasswordError = true;
@@ -248,13 +246,11 @@ public class DMainActivity extends BaseActivity implements MokoScanDeviceCallbac
 
     private void showDeviceTypeErrorDialog() {
         AlertMessageDialog dialog = new AlertMessageDialog();
-        dialog.setTitle("");
-        dialog.setMessage("");
+        dialog.setTitle("Warning!");
+        dialog.setMessage("The software version selected is incorrect.Please back to the product list options and select again.");
         dialog.setCancelGone();
-        dialog.setConfirm("");
-        dialog.setOnAlertConfirmListener(() -> {
-            DMokoSupport.getInstance().disConnectBle();
-        });
+        dialog.setConfirm("Confirm");
+        dialog.setOnAlertConfirmListener(() -> DMokoSupport.getInstance().disConnectBle());
         dialog.show(getSupportFragmentManager());
     }
 
