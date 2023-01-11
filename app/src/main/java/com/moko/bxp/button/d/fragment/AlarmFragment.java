@@ -46,4 +46,8 @@ public class AlarmFragment extends Fragment {
     public void setAbnormalInactivityModeSwitch(int onOff) {
         mBind.tvAbnormalInactivityModeSwitch.setText(onOff == 1 ? "ON" : "OFF");
     }
+
+    public void setAbnormalInactivityModeVisibility(boolean hasAcc) {
+        mBind.layoutAbnormalInactivityModeSwitch.setVisibility(hasAcc ? View.VISIBLE : View.GONE);
+    }
 }

@@ -1,8 +1,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:paddingLeft="15dp"
+    tools:background="@color/white_ffffff"
     android:paddingRight="15dp">
 
     <RelativeLayout
@@ -97,10 +99,9 @@
     <View style="@style/divider_line" />
 
     <RelativeLayout
+        android:id="@+id/layout_abnormal_inactivity_mode_switch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-
         <TextView
             android:id="@+id/tv_abnormal_inactivity_mode_switch"
             android:layout_width="wrap_content"
@@ -114,6 +115,7 @@
             android:textSize="15sp" />
 
         <TextView
+            android:id="@+id/tv_abnormal"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:clickable="true"
@@ -123,8 +125,9 @@
             android:text="Abnormal inactivity mode"
             android:textColor="@color/black_333333"
             android:textSize="15sp" />
-    </RelativeLayout>
 
-    <View style="@style/divider_line" />
+        <View style="@style/divider_line"
+            android:layout_alignBottom="@+id/tv_abnormal"/>
+    </RelativeLayout>
 
 </LinearLayout>

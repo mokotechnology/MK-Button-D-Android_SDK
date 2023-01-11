@@ -59,4 +59,18 @@ public class SettingFragment extends Fragment {
         orderTasks.add(OrderTaskAssembler.setEffectiveClickInterval(interval));
         DMokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
+
+    public void setAccAndPowerSaveVisibility(boolean hasAcc){
+        if (hasAcc){
+            mBind.tvAcc.setVisibility(View.VISIBLE);
+            mBind.lineAcc.setVisibility(View.VISIBLE);
+            mBind.tvPowerSave.setVisibility(View.VISIBLE);
+            mBind.linePowerSave.setVisibility(View.VISIBLE);
+        }else {
+            mBind.tvAcc.setVisibility(View.GONE);
+            mBind.lineAcc.setVisibility(View.GONE);
+            mBind.tvPowerSave.setVisibility(View.GONE);
+            mBind.linePowerSave.setVisibility(View.GONE);
+        }
+    }
 }

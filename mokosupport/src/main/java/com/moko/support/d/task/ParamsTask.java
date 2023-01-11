@@ -60,6 +60,7 @@ public class ParamsTask extends OrderTask {
             case KEY_SINGLE_PRESS_EVENTS:
             case KEY_DOUBLE_PRESS_EVENTS:
             case KEY_LONG_PRESS_EVENTS:
+            case KEY_SENSOR_TYPE:
                 createGetParamsData(key.getParamsKey());
                 break;
         }

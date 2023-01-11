@@ -474,4 +474,10 @@ public class OrderTaskAssembler {
         task.getData(ParamsKeyEnum.KEY_LONG_PRESS_EVENTS);
         return task;
     }
+
+    public static OrderTask getSensorType(){
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_SENSOR_TYPE);
+        return task;
+    }
 }

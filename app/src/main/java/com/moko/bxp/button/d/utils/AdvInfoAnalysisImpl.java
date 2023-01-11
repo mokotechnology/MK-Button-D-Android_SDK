@@ -4,6 +4,7 @@ import android.os.ParcelUuid;
 import android.os.SystemClock;
 import android.text.TextUtils;
 
+import com.elvishew.xlog.XLog;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.button.d.entity.AdvInfo;
 import com.moko.support.d.entity.DeviceInfo;
@@ -52,6 +53,7 @@ public class AdvInfoAnalysisImpl implements DeviceInfoAnalysis<AdvInfo> {
         final Iterator iterator = map.keySet().iterator();
         while (iterator.hasNext()) {
             final ParcelUuid parcelUuid = (ParcelUuid) iterator.next();
+            XLog.i("333333mac="+deviceInfo.mac+"uuid="+parcelUuid);
             if (parcelUuid.getUuid().equals(OrderServices.SERVICE_ADV_DEVICE.getUuid())) {
                 byte[] data = map.get(new ParcelUuid(OrderServices.SERVICE_ADV_DEVICE.getUuid()));
                 if (data == null || data.length == 0 || data.length < 21)

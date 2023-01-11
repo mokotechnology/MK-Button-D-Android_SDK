@@ -17,6 +17,9 @@ import android.view.Window;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import androidx.annotation.IdRes;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.elvishew.xlog.XLog;
 import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
@@ -49,8 +52,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import androidx.annotation.IdRes;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import no.nordicsemi.android.dfu.DfuProgressListener;
 import no.nordicsemi.android.dfu.DfuProgressListenerAdapter;
 import no.nordicsemi.android.dfu.DfuServiceInitiator;
@@ -91,7 +92,8 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             // 蓝牙未打开，开启蓝牙
             DMokoSupport.getInstance().enableBluetooth();
         }
-        getAlarmSwitch();
+        DMokoSupport.getInstance().sendOrder(OrderTaskAssembler.getSensorType());
+//        getAlarmSwitch();
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 100)
@@ -326,6 +328,19 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                                             deviceFragment.setDeviceId(deviceIdHex);
                                         }
                                         break;
+
+                                    case KEY_SENSOR_TYPE:
+                                        if (length > 0) {
+                                            int val = MokoUtils.toInt(Arrays.copyOfRange(value, 4, value.length));
+                                            hasAcc = (val & 0x01) == 1;
+                                            int b = (val >> 1) & 0x01;
+                                            int c = (val >> 2) & 0x01;
+                                            XLog.i("666666a=" + val + "b=" + b + "c=" + c);
+                                            alarmFragment.setAbnormalInactivityModeVisibility(hasAcc);
+                                            getAlarmSwitch();
+                                            settingFragment.setAccAndPowerSaveVisibility(hasAcc);
+                                        }
+                                        break;
                                 }
                             }
                         }
@@ -335,6 +350,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         });
     }
 
+    public boolean hasAcc;
 
     private void getAlarmSwitch() {
         showSyncingProgressDialog();
@@ -342,7 +358,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         orderTasks.add(OrderTaskAssembler.getSlotParams(0));
         orderTasks.add(OrderTaskAssembler.getSlotParams(1));
         orderTasks.add(OrderTaskAssembler.getSlotParams(2));
-        orderTasks.add(OrderTaskAssembler.getSlotParams(3));
+        if (hasAcc) orderTasks.add(OrderTaskAssembler.getSlotParams(3));
         DMokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 
