@@ -19,7 +19,7 @@ import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.button.d.R;
-import com.moko.bxp.button.d.databinding.ActivityAccDataBinding;
+import com.moko.bxp.button.d.databinding.DActivityAccDataBinding;
 import com.moko.bxp.button.d.dialog.BottomDialog;
 import com.moko.bxp.button.d.dialog.LoadingMessageDialog;
 import com.moko.bxp.button.d.utils.ToastUtils;
@@ -37,7 +37,7 @@ import java.util.Arrays;
 
 public class AccDataActivity extends BaseActivity{
 
-    private ActivityAccDataBinding mBind;
+    private DActivityAccDataBinding mBind;
     private boolean mReceiverTag = false;
     private ArrayList<String> axisDataRates;
     private ArrayList<String> axisScales;
@@ -49,7 +49,7 @@ public class AccDataActivity extends BaseActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBind = ActivityAccDataBinding.inflate(getLayoutInflater());
+        mBind = DActivityAccDataBinding.inflate(getLayoutInflater());
         setContentView(mBind.getRoot());
         axisDataRates = new ArrayList<>();
         axisDataRates.add("1Hz");

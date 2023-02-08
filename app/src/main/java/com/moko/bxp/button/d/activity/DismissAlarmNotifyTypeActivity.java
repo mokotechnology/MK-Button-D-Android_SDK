@@ -11,7 +11,7 @@ import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.button.d.R;
-import com.moko.bxp.button.d.databinding.ActivityDismissAlarmNotifyTypeBinding;
+import com.moko.bxp.button.d.databinding.DActivityDismissAlarmNotifyTypeBinding;
 import com.moko.bxp.button.d.dialog.LoadingMessageDialog;
 import com.moko.bxp.button.d.utils.ToastUtils;
 import com.moko.support.d.DMokoSupport;
@@ -28,17 +28,17 @@ import java.util.Arrays;
 
 public class DismissAlarmNotifyTypeActivity extends BaseActivity {
 
-    private ActivityDismissAlarmNotifyTypeBinding mBind;
+    private DActivityDismissAlarmNotifyTypeBinding mBind;
     public boolean isConfigError;
     public int notifyType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBind = ActivityDismissAlarmNotifyTypeBinding.inflate(getLayoutInflater());
+        mBind = DActivityDismissAlarmNotifyTypeBinding.inflate(getLayoutInflater());
         setContentView(mBind.getRoot());
 
-        String[] dismissAlarmNotifyTypeArray = getResources().getStringArray(R.array.alarm_notify_type);
+        String[] dismissAlarmNotifyTypeArray = getResources().getStringArray(R.array.alarm_notify_type_d);
         mBind.npvNotifyType.setDisplayedValues(dismissAlarmNotifyTypeArray);
         mBind.npvNotifyType.setMinValue(0);
         mBind.npvNotifyType.setMaxValue(dismissAlarmNotifyTypeArray.length - 1);

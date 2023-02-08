@@ -81,7 +81,7 @@
                     app:npv_DividerColor="@color/blue_2f84d0"
                     app:npv_DividerMarginLeft="15dp"
                     app:npv_DividerMarginRight="15dp"
-                    app:npv_TextArray="@array/alarm_notify_type"
+                    app:npv_TextArray="@array/alarm_notify_type_d"
                     app:npv_TextColorNormal="@color/grey_b3b3b3"
                     app:npv_TextColorSelected="@color/blue_2f84d0"
                     app:npv_TextSizeNormal="13sp"

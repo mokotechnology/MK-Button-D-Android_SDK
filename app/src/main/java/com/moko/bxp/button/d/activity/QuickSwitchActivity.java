@@ -16,7 +16,7 @@ import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.bxp.button.d.AppConstants;
 import com.moko.bxp.button.d.R;
-import com.moko.bxp.button.d.databinding.ActivityQuickSwitchBinding;
+import com.moko.bxp.button.d.databinding.DActivityQuickSwitchBinding;
 import com.moko.bxp.button.d.dialog.AlertMessageDialog;
 import com.moko.bxp.button.d.dialog.LoadingMessageDialog;
 import com.moko.bxp.button.d.utils.ToastUtils;
@@ -33,13 +33,13 @@ import java.util.ArrayList;
 
 public class QuickSwitchActivity extends BaseActivity {
 
-    private ActivityQuickSwitchBinding mBind;
+    private DActivityQuickSwitchBinding mBind;
     public boolean isConfigError;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBind = ActivityQuickSwitchBinding.inflate(getLayoutInflater());
+        mBind = DActivityQuickSwitchBinding.inflate(getLayoutInflater());
         setContentView(mBind.getRoot());
 
         EventBus.getDefault().register(this);

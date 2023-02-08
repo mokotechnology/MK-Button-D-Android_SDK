@@ -10,7 +10,7 @@ import com.moko.ble.lib.event.OrderTaskResponseEvent;
 import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
-import com.moko.bxp.button.d.databinding.ActivityRemoteReminderNotifyTypeBinding;
+import com.moko.bxp.button.d.databinding.DActivityRemoteReminderNotifyTypeBinding;
 import com.moko.bxp.button.d.dialog.LoadingMessageDialog;
 import com.moko.bxp.button.d.utils.ToastUtils;
 import com.moko.support.d.DMokoSupport;
@@ -27,13 +27,13 @@ import java.util.Arrays;
 
 public class RemoteReminderActivity extends BaseActivity {
 
-    private ActivityRemoteReminderNotifyTypeBinding mBind;
+    private DActivityRemoteReminderNotifyTypeBinding mBind;
     public boolean isConfigError;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBind = ActivityRemoteReminderNotifyTypeBinding.inflate(getLayoutInflater());
+        mBind = DActivityRemoteReminderNotifyTypeBinding.inflate(getLayoutInflater());
         setContentView(mBind.getRoot());
         EventBus.getDefault().register(this);
         if (!DMokoSupport.getInstance().isBluetoothOpen()) {

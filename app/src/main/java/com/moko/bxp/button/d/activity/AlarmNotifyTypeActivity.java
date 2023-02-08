@@ -12,7 +12,7 @@ import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.button.d.AppConstants;
 import com.moko.bxp.button.d.R;
-import com.moko.bxp.button.d.databinding.ActivityAlarmNotifyTypeBinding;
+import com.moko.bxp.button.d.databinding.DActivityAlarmNotifyTypeBinding;
 import com.moko.bxp.button.d.dialog.LoadingMessageDialog;
 import com.moko.bxp.button.d.utils.ToastUtils;
 import com.moko.support.d.DMokoSupport;
@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class AlarmNotifyTypeActivity extends BaseActivity {
-    private ActivityAlarmNotifyTypeBinding mBind;
+    private DActivityAlarmNotifyTypeBinding mBind;
     public boolean isConfigError;
     public int slotType;
     public int notifyType;
@@ -36,13 +36,13 @@ public class AlarmNotifyTypeActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBind = ActivityAlarmNotifyTypeBinding.inflate(getLayoutInflater());
+        mBind = DActivityAlarmNotifyTypeBinding.inflate(getLayoutInflater());
         setContentView(mBind.getRoot());
         if (getIntent() != null && getIntent().getExtras() != null) {
             slotType = getIntent().getIntExtra(AppConstants.EXTRA_KEY_SLOT_TYPE, 0);
         }
 
-        String[] alarmNotifyTypeArray = getResources().getStringArray(R.array.alarm_notify_type);
+        String[] alarmNotifyTypeArray = getResources().getStringArray(R.array.alarm_notify_type_d);
         mBind.npvNotifyType.setDisplayedValues(alarmNotifyTypeArray);
         mBind.npvNotifyType.setMinValue(0);
         mBind.npvNotifyType.setMaxValue(alarmNotifyTypeArray.length - 1);

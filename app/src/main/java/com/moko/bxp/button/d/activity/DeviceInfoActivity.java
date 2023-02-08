@@ -29,7 +29,7 @@ import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.button.d.AppConstants;
 import com.moko.bxp.button.d.R;
-import com.moko.bxp.button.d.databinding.ActivityDeviceInfoBinding;
+import com.moko.bxp.button.d.databinding.DActivityDeviceInfoBinding;
 import com.moko.bxp.button.d.dialog.AlertMessageDialog;
 import com.moko.bxp.button.d.dialog.LoadingMessageDialog;
 import com.moko.bxp.button.d.dialog.ModifyPasswordDialog;
@@ -60,7 +60,7 @@ import no.nordicsemi.android.dfu.DfuServiceListenerHelper;
 public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener {
     public static final int REQUEST_CODE_SELECT_FIRMWARE = 0x10;
 
-    private ActivityDeviceInfoBinding mBind;
+    private DActivityDeviceInfoBinding mBind;
     private FragmentManager fragmentManager;
     private AlarmFragment alarmFragment;
     private SettingFragment settingFragment;
@@ -76,7 +76,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBind = ActivityDeviceInfoBinding.inflate(getLayoutInflater());
+        mBind = DActivityDeviceInfoBinding.inflate(getLayoutInflater());
         setContentView(mBind.getRoot());
         mPassword = getIntent().getStringExtra(AppConstants.EXTRA_KEY_PASSWORD);
         fragmentManager = getFragmentManager();

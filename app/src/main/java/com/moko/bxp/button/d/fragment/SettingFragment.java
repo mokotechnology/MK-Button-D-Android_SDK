@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import com.moko.ble.lib.task.OrderTask;
 import com.moko.bxp.button.d.activity.DeviceInfoActivity;
-import com.moko.bxp.button.d.databinding.FragmentSettingBinding;
+import com.moko.bxp.button.d.databinding.FragmentDSettingBinding;
 import com.moko.support.d.DMokoSupport;
 import com.moko.support.d.OrderTaskAssembler;
 
@@ -18,7 +18,7 @@ import java.util.List;
 
 public class SettingFragment extends Fragment {
 
-    private FragmentSettingBinding mBind;
+    private FragmentDSettingBinding mBind;
     private DeviceInfoActivity activity;
 
     public SettingFragment() {
@@ -32,7 +32,7 @@ public class SettingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mBind = FragmentSettingBinding.inflate(inflater, container, false);
+        mBind = FragmentDSettingBinding.inflate(inflater, container, false);
         activity = (DeviceInfoActivity) getActivity();
         return mBind.getRoot();
     }

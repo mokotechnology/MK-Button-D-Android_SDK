@@ -9,7 +9,7 @@ import com.moko.ble.lib.event.OrderTaskResponseEvent;
 import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
-import com.moko.bxp.button.d.databinding.ActivitySystemInfoBinding;
+import com.moko.bxp.button.d.databinding.DActivitySystemInfoBinding;
 import com.moko.bxp.button.d.dialog.LoadingMessageDialog;
 import com.moko.support.d.DMokoSupport;
 import com.moko.support.d.OrderTaskAssembler;
@@ -26,12 +26,12 @@ import java.util.Arrays;
 public class SystemInfoActivity extends BaseActivity {
 
 
-    private ActivitySystemInfoBinding mBind;
+    private DActivitySystemInfoBinding mBind;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBind = ActivitySystemInfoBinding.inflate(getLayoutInflater());
+        mBind = DActivitySystemInfoBinding.inflate(getLayoutInflater());
         setContentView(mBind.getRoot());
         EventBus.getDefault().register(this);
         if (!DMokoSupport.getInstance().isBluetoothOpen()) {

@@ -9,7 +9,7 @@ import com.moko.ble.lib.event.OrderTaskResponseEvent;
 import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
-import com.moko.bxp.button.d.databinding.ActivityAlarmEventBinding;
+import com.moko.bxp.button.d.databinding.DActivityAlarmEventBinding;
 import com.moko.bxp.button.d.dialog.LoadingMessageDialog;
 import com.moko.bxp.button.d.utils.ToastUtils;
 import com.moko.support.d.DMokoSupport;
@@ -25,12 +25,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class AlarmEventActivity extends BaseActivity {
-    private ActivityAlarmEventBinding mBind;
+    private DActivityAlarmEventBinding mBind;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBind = ActivityAlarmEventBinding.inflate(getLayoutInflater());
+        mBind = DActivityAlarmEventBinding.inflate(getLayoutInflater());
         setContentView(mBind.getRoot());
 
         EventBus.getDefault().register(this);

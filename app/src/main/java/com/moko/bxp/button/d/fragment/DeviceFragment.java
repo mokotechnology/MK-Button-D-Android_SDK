@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.moko.ble.lib.task.OrderTask;
-import com.moko.bxp.button.d.databinding.FragmentDeviceBinding;
+import com.moko.bxp.button.d.databinding.DFragmentDeviceBinding;
 import com.moko.support.d.DMokoSupport;
 import com.moko.support.d.OrderTaskAssembler;
 
@@ -20,7 +20,7 @@ import java.util.List;
 public class DeviceFragment extends Fragment {
     private final String FILTER_ASCII = "[ -~]*";
 
-    private FragmentDeviceBinding mBind;
+    private DFragmentDeviceBinding mBind;
 
     public DeviceFragment() {
     }
@@ -34,7 +34,7 @@ public class DeviceFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mBind = FragmentDeviceBinding.inflate(inflater, container, false);
+        mBind = DFragmentDeviceBinding.inflate(inflater, container, false);
         InputFilter filter = new InputFilter() {
             @Override
             public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {

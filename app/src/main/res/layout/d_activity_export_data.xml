@@ -130,6 +130,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/ll_sync"
         android:padding="10dp"
-        tools:listitem="@layout/item_export_data" />
+        tools:listitem="@layout/d_item_export_data" />
 
 </LinearLayout>

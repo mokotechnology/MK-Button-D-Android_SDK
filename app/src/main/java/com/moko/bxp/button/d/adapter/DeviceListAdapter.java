@@ -17,7 +17,7 @@ import java.util.Iterator;
 
 public class DeviceListAdapter extends BaseQuickAdapter<AdvInfo, BaseViewHolder> {
     public DeviceListAdapter() {
-        super(R.layout.list_item_device);
+        super(R.layout.d_list_item_device);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class DeviceListAdapter extends BaseQuickAdapter<AdvInfo, BaseViewHolder>
                     triggerTypeStr = "Abnormal inactivity alarm mode";
                     break;
             }
-            View view = LayoutInflater.from(mContext).inflate(R.layout.adv_item_trigger, null);
+            View view = LayoutInflater.from(mContext).inflate(R.layout.d_adv_item_trigger, null);
             TextView tvTriggerType = view.findViewById(R.id.tv_trigger_type);
             TextView tvTriggerStatus = view.findViewById(R.id.tv_trigger_status);
             TextView tvTriggerCount = view.findViewById(R.id.tv_trigger_count);
@@ -65,7 +65,7 @@ public class DeviceListAdapter extends BaseQuickAdapter<AdvInfo, BaseViewHolder>
             parent.addView(view);
         }
         if (item.deviceInfoFrame == 0) {
-            View view = LayoutInflater.from(mContext).inflate(R.layout.adv_item_device, null);
+            View view = LayoutInflater.from(mContext).inflate(R.layout.d_adv_item_device, null);
             TextView tvRssi = view.findViewById(R.id.tv_rssi);
             RelativeLayout rlAcc = view.findViewById(R.id.rl_acc);
             TextView tvAcc = view.findViewById(R.id.tv_acc);

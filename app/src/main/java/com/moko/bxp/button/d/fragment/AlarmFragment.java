@@ -7,11 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.moko.bxp.button.d.activity.DeviceInfoActivity;
-import com.moko.bxp.button.d.databinding.FragmentAlarmBinding;
+import com.moko.bxp.button.d.databinding.FragmentDAlarmBinding;
 
 public class AlarmFragment extends Fragment {
 
-    private FragmentAlarmBinding mBind;
+    private FragmentDAlarmBinding mBind;
     private DeviceInfoActivity activity;
 
     public AlarmFragment() {
@@ -25,7 +25,7 @@ public class AlarmFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mBind = FragmentAlarmBinding.inflate(inflater, container, false);
+        mBind = FragmentDAlarmBinding.inflate(inflater, container, false);
         activity = (DeviceInfoActivity) getActivity();
         return mBind.getRoot();
     }

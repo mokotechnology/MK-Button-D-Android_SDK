@@ -31,7 +31,7 @@ import com.moko.bxp.button.d.AppConstants;
 import com.moko.bxp.button.d.BuildConfig;
 import com.moko.bxp.button.d.R;
 import com.moko.bxp.button.d.adapter.DeviceListAdapter;
-import com.moko.bxp.button.d.databinding.ActivityMainBinding;
+import com.moko.bxp.button.d.databinding.DActivityMainBinding;
 import com.moko.bxp.button.d.dialog.AlertMessageDialog;
 import com.moko.bxp.button.d.dialog.LoadingDialog;
 import com.moko.bxp.button.d.dialog.LoadingMessageDialog;
@@ -61,7 +61,7 @@ import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DMainActivity extends BaseActivity implements MokoScanDeviceCallback, BaseQuickAdapter.OnItemChildClickListener {
-    private ActivityMainBinding mBind;
+    private DActivityMainBinding mBind;
     private boolean mReceiverTag = false;
     private ConcurrentHashMap<String, AdvInfo> advInfoHashMap;
     private ArrayList<AdvInfo> advInfoList;
@@ -75,7 +75,7 @@ public class DMainActivity extends BaseActivity implements MokoScanDeviceCallbac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBind = ActivityMainBinding.inflate(getLayoutInflater());
+        mBind = DActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mBind.getRoot());
         // 初始化Xlog
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {

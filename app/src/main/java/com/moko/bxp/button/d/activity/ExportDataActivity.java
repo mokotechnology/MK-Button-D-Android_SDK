@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
 import com.moko.ble.lib.event.OrderTaskResponseEvent;
@@ -14,7 +16,7 @@ import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.bxp.button.d.AppConstants;
 import com.moko.bxp.button.d.R;
 import com.moko.bxp.button.d.adapter.ExportDataListAdapter;
-import com.moko.bxp.button.d.databinding.ActivityExportDataBinding;
+import com.moko.bxp.button.d.databinding.DActivityExportDataBinding;
 import com.moko.bxp.button.d.dialog.LoadingMessageDialog;
 import com.moko.bxp.button.d.utils.Utils;
 import com.moko.support.d.DMokoSupport;
@@ -36,8 +38,6 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 public class ExportDataActivity extends BaseActivity {
 
     private static final String EXPORT_FILE_SINGLE = "Single_press_trigger_event.txt";
@@ -48,7 +48,7 @@ public class ExportDataActivity extends BaseActivity {
     private static final String EXPORT_FILE_LONG_TITLE = "Long_press_trigger_event";
 
     private static String PATH_LOGCAT;
-    private ActivityExportDataBinding mBind;
+    private DActivityExportDataBinding mBind;
 
     private StringBuilder storeString;
     private ArrayList<ExportData> exportDatas;
@@ -65,7 +65,7 @@ public class ExportDataActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBind = ActivityExportDataBinding.inflate(getLayoutInflater());
+        mBind = DActivityExportDataBinding.inflate(getLayoutInflater());
         setContentView(mBind.getRoot());
         if (getIntent() != null && getIntent().getExtras() != null) {
             slotType = getIntent().getIntExtra(AppConstants.EXTRA_KEY_SLOT_TYPE, 0);

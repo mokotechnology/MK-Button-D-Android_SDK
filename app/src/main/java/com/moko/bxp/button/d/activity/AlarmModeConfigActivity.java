@@ -16,7 +16,7 @@ import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.button.d.AppConstants;
 import com.moko.bxp.button.d.R;
-import com.moko.bxp.button.d.databinding.ActivityAlarmModeConfigBinding;
+import com.moko.bxp.button.d.databinding.DActivityAlarmModeConfigBinding;
 import com.moko.bxp.button.d.dialog.LoadingMessageDialog;
 import com.moko.bxp.button.d.utils.ToastUtils;
 import com.moko.support.d.DMokoSupport;
@@ -34,7 +34,7 @@ import java.util.Arrays;
 
 public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnSeekBarChangeListener {
 
-    private ActivityAlarmModeConfigBinding mBind;
+    private DActivityAlarmModeConfigBinding mBind;
     public boolean isConfigError;
     public int slotType;
     private boolean isAdvOpen;
@@ -44,7 +44,7 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBind = ActivityAlarmModeConfigBinding.inflate(getLayoutInflater());
+        mBind = DActivityAlarmModeConfigBinding.inflate(getLayoutInflater());
         setContentView(mBind.getRoot());
         if (getIntent() != null && getIntent().getExtras() != null) {
             slotType = getIntent().getIntExtra(AppConstants.EXTRA_KEY_SLOT_TYPE, 0);
