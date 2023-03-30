@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
+import com.elvishew.xlog.XLog;
 import com.moko.bxp.button.d.BuildConfig;
 import com.moko.bxp.button.d.R;
 import com.moko.bxp.button.d.databinding.ActivityAboutBinding;
@@ -46,13 +47,14 @@ public class AboutActivity extends BaseActivity {
     public void onFeedback(View view) {
         if (isWindowLocked())
             return;
-        File trackerLog = new File(DMainActivity.PATH_LOGCAT + File.separator + "MKButtonD.txt");
-        File trackerLogBak = new File(DMainActivity.PATH_LOGCAT + File.separator + "MKButtonD.txt.bak");
-        File trackerCrashLog = new File(DMainActivity.PATH_LOGCAT + File.separator + "d_crash_log.txt");
+        File trackerLog = new File(DMainActivity.PATH_LOGCAT + File.separator + (BuildConfig.IS_LIBRARY ? "MKButton.txt" : "MKButtonD.txt"));
+        File trackerLogBak = new File(DMainActivity.PATH_LOGCAT + File.separator + (BuildConfig.IS_LIBRARY ? "MKButton.txt.bak" : "MKButtonD.txt.bak"));
+        File trackerCrashLog = new File(DMainActivity.PATH_LOGCAT + File.separator + (BuildConfig.IS_LIBRARY ? "crash_log.txt" : "d_crash_log.txt"));
         if (!trackerLog.exists() || !trackerLog.canRead()) {
             ToastUtils.showToast(this, "File is not exists!");
             return;
         }
+        XLog.i("333333mail="+trackerLog.getPath());
         String address = "Development@mokotechnology.com";
         StringBuilder mailContent = new StringBuilder("MKButtonD_");
         Calendar calendar = Calendar.getInstance();
