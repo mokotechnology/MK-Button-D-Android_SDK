@@ -9,7 +9,7 @@ import android.view.View;
 import com.elvishew.xlog.XLog;
 import com.moko.bxp.button.d.BuildConfig;
 import com.moko.bxp.button.d.R;
-import com.moko.bxp.button.d.databinding.ActivityAboutBinding;
+import com.moko.bxp.button.d.databinding.ActivityAboutDBinding;
 import com.moko.bxp.button.d.utils.ToastUtils;
 import com.moko.bxp.button.d.utils.Utils;
 
@@ -18,12 +18,12 @@ import java.util.Calendar;
 
 
 public class AboutActivity extends BaseActivity {
-    private ActivityAboutBinding mBind;
+    private ActivityAboutDBinding mBind;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBind = ActivityAboutBinding.inflate(getLayoutInflater());
+        mBind = ActivityAboutDBinding.inflate(getLayoutInflater());
         setContentView(mBind.getRoot());
         if (!BuildConfig.IS_LIBRARY) {
             mBind.appVersion.setText(String.format("Version:V%s", Utils.getVersionInfo(this)));
