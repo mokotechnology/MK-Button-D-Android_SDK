@@ -4,18 +4,18 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.moko.bxp.button.d.R;
-import com.moko.bxp.button.d.databinding.DialogLoadingBinding;
-import com.moko.bxp.button.d.view.ProgressDrawable;
-
 import androidx.core.content.ContextCompat;
 
-public class LoadingDialog extends MokoBaseDialog<DialogLoadingBinding> {
+import com.moko.bxp.button.d.R;
+import com.moko.bxp.button.d.databinding.DialogLoadingDBinding;
+import com.moko.bxp.button.d.view.ProgressDrawable;
+
+public class LoadingDialog extends MokoBaseDialog<DialogLoadingDBinding> {
     public static final String TAG = LoadingDialog.class.getSimpleName();
 
     @Override
-    protected DialogLoadingBinding getViewBind(LayoutInflater inflater, ViewGroup container) {
-        return DialogLoadingBinding.inflate(inflater, container, false);
+    protected DialogLoadingDBinding getViewBind(LayoutInflater inflater, ViewGroup container) {
+        return DialogLoadingDBinding.inflate(inflater, container, false);
     }
 
     @Override

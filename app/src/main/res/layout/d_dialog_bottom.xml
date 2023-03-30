@@ -38,8 +38,8 @@
             android:textSize="15sp" />
     </RelativeLayout>
 
-    <com.moko.bxp.button.d.view.WheelView
-        android:id="@+id/wv_bottom"
+    <com.moko.bxp.button.d.view.DWheelView
+        android:id="@+id/wv_bottom_d"
         android:layout_width="0dp"
         android:layout_height="204dp"
         android:layout_marginLeft="30dp"

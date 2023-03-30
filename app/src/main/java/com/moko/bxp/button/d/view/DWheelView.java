@@ -26,7 +26,7 @@ import java.util.ArrayList;
  *
  * @author JiangPing
  */
-public class WheelView extends View {
+public class DWheelView extends View {
     /**
      * 控件宽度
      */
@@ -143,19 +143,19 @@ public class WheelView extends View {
     private int selectedBgColor = 0x00000000;
 
 
-    public WheelView(Context context, AttributeSet attrs, int defStyle) {
+    public DWheelView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(context, attrs);
         initData();
     }
 
-    public WheelView(Context context, AttributeSet attrs) {
+    public DWheelView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
         initData();
     }
 
-    public WheelView(Context context) {
+    public DWheelView(Context context) {
         super(context);
         initData();
     }

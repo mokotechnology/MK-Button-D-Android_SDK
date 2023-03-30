@@ -10,10 +10,10 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
 import com.moko.bxp.button.d.R;
-import com.moko.bxp.button.d.databinding.DialogPasswordBinding;
+import com.moko.bxp.button.d.databinding.DialogPasswordDBinding;
 import com.moko.bxp.button.d.utils.ToastUtils;
 
-public class PasswordDialog extends MokoBaseDialog<DialogPasswordBinding> {
+public class PasswordDialog extends MokoBaseDialog<DialogPasswordDBinding> {
     public static final String TAG = PasswordDialog.class.getSimpleName();
 
 
@@ -23,8 +23,8 @@ public class PasswordDialog extends MokoBaseDialog<DialogPasswordBinding> {
 
 
     @Override
-    protected DialogPasswordBinding getViewBind(LayoutInflater inflater, ViewGroup container) {
-        return DialogPasswordBinding.inflate(inflater, container, false);
+    protected DialogPasswordDBinding getViewBind(LayoutInflater inflater, ViewGroup container) {
+        return DialogPasswordDBinding.inflate(inflater, container, false);
     }
 
     @Override

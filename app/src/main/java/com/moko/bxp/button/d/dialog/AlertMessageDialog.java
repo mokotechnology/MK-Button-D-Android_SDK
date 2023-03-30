@@ -7,13 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.moko.bxp.button.d.R;
-import com.moko.bxp.button.d.databinding.DialogAlertBinding;
-
 import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 
-public class AlertMessageDialog extends MokoBaseDialog<DialogAlertBinding> {
+import com.moko.bxp.button.d.R;
+import com.moko.bxp.button.d.databinding.DDialogAlertBinding;
+
+public class AlertMessageDialog extends MokoBaseDialog<DDialogAlertBinding> {
     public static final String TAG = AlertMessageDialog.class.getSimpleName();
     private String cancel;
     private String confirm;
@@ -27,8 +27,8 @@ public class AlertMessageDialog extends MokoBaseDialog<DialogAlertBinding> {
     private int messageTextColorId = -1;
 
     @Override
-    protected DialogAlertBinding getViewBind(LayoutInflater inflater, ViewGroup container) {
-        return DialogAlertBinding.inflate(inflater, container, false);
+    protected DDialogAlertBinding getViewBind(LayoutInflater inflater, ViewGroup container) {
+        return DDialogAlertBinding.inflate(inflater, container, false);
     }
 
     @Override

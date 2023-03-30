@@ -11,9 +11,9 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
 import com.moko.bxp.button.d.R;
-import com.moko.bxp.button.d.databinding.DialogChangePasswordBinding;
+import com.moko.bxp.button.d.databinding.DDialogChangePasswordBinding;
 
-public class ModifyPasswordDialog extends MokoBaseDialog<DialogChangePasswordBinding> {
+public class ModifyPasswordDialog extends MokoBaseDialog<DDialogChangePasswordBinding> {
     public static final String TAG = ModifyPasswordDialog.class.getSimpleName();
 
     private final String FILTER_ASCII = "[ -~]*";
@@ -23,8 +23,8 @@ public class ModifyPasswordDialog extends MokoBaseDialog<DialogChangePasswordBin
 
 
     @Override
-    protected DialogChangePasswordBinding getViewBind(LayoutInflater inflater, ViewGroup container) {
-        return DialogChangePasswordBinding.inflate(inflater, container, false);
+    protected DDialogChangePasswordBinding getViewBind(LayoutInflater inflater, ViewGroup container) {
+        return DDialogChangePasswordBinding.inflate(inflater, container, false);
     }
 
     @Override

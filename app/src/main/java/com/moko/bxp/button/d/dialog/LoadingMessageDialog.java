@@ -6,22 +6,22 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.moko.bxp.button.d.R;
-import com.moko.bxp.button.d.databinding.DialogLoadingMessageBinding;
-import com.moko.bxp.button.d.view.ProgressDrawable;
-
 import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 
-public class LoadingMessageDialog extends MokoBaseDialog<DialogLoadingMessageBinding> {
+import com.moko.bxp.button.d.R;
+import com.moko.bxp.button.d.databinding.DialogLoadingMessageDBinding;
+import com.moko.bxp.button.d.view.ProgressDrawable;
+
+public class LoadingMessageDialog extends MokoBaseDialog<DialogLoadingMessageDBinding> {
     //    private static final int DIALOG_DISMISS_DELAY_TIME = 15000;
     public static final String TAG = LoadingMessageDialog.class.getSimpleName();
     private String message;
     private int messageId = -1;
 
     @Override
-    protected DialogLoadingMessageBinding getViewBind(LayoutInflater inflater, ViewGroup container) {
-        return DialogLoadingMessageBinding.inflate(inflater, container, false);
+    protected DialogLoadingMessageDBinding getViewBind(LayoutInflater inflater, ViewGroup container) {
+        return DialogLoadingMessageDBinding.inflate(inflater, container, false);
     }
 
     @Override
