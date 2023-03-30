@@ -196,6 +196,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                 }
             }
             if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
+                dismissSyncProgressDialog();
             }
             if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
                 dismissSyncProgressDialog();

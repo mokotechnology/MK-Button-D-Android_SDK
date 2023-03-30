@@ -8,6 +8,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.SeekBar;
 
+import com.elvishew.xlog.XLog;
 import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
 import com.moko.ble.lib.event.OrderTaskResponseEvent;
@@ -51,16 +52,16 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
         }
         switch (slotType) {
             case 0:
-                mBind.tvAlarmTitle.setText("Single press alarm mode");
+                mBind.tvAlarmTitle.setText("Single press mode");
                 break;
             case 1:
-                mBind.tvAlarmTitle.setText("Double press alarm mode");
+                mBind.tvAlarmTitle.setText("Double press mode");
                 break;
             case 2:
-                mBind.tvAlarmTitle.setText("Long press alarm mode");
+                mBind.tvAlarmTitle.setText("Long press mode");
                 break;
             case 3:
-                mBind.tvAlarmTitle.setText("Abnormal inactivity alarm mode");
+                mBind.tvAlarmTitle.setText("Abnormal inactivity mode");
                 break;
         }
         if (slotType == 3) {
@@ -195,15 +196,22 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
                                         if (length == 6 && value[4] == slotType) {
                                             int slotEnable = value[5] & 0xFF;
                                             int rangingData = value[6];
+                                            XLog.i("333333range=" + rangingData);
                                             int advInterval = MokoUtils.toInt(Arrays.copyOfRange(value, 7, 9));
                                             int txPower = value[9];
                                             isAdvOpen = slotEnable == 1;
                                             mBind.ivSlotAdvSwitch.setImageResource(isAdvOpen ? R.drawable.ic_checked : R.drawable.ic_unchecked);
                                             int progress = rangingData + 100;
+                                            //如果为0不会触发监听
+                                            if (rangingData == -100)
+                                                mBind.tvAdvRangeData.setText(String.format("%ddBm", rangingData));
                                             mBind.sbAdvRangeData.setProgress(progress);
                                             mBind.etAdvInterval.setText(String.valueOf(advInterval / 20));
                                             TxPowerEnum txPowerEnum = TxPowerEnum.fromTxPower(txPower);
                                             mBind.sbTxPower.setProgress(txPowerEnum.ordinal());
+                                            XLog.i("333333tx=" + txPower);
+                                            if (txPower == -40)
+                                                mBind.tvTxPower.setText(String.format("%ddBm", txPowerEnum.getTxPower()));
                                             mBind.llSlotAlarmParams.setVisibility(isAdvOpen ? View.VISIBLE : View.GONE);
                                         }
                                         break;

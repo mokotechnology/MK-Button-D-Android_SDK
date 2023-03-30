@@ -426,6 +426,8 @@ public class DMainActivity extends BaseActivity implements MokoScanDeviceCallbac
 
     @Override
     public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+        //防止重复点击
+        if (isWindowLocked()) return;
         if (!DMokoSupport.getInstance().isBluetoothOpen()) {
             // 蓝牙未打开，开启蓝牙
             DMokoSupport.getInstance().enableBluetooth();
