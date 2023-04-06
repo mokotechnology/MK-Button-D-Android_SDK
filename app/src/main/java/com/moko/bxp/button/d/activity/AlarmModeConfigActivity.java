@@ -226,6 +226,9 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
                                             mBind.etTriggerAdvInterval.setText(String.valueOf(triggerAdvInterval / 20));
                                             TxPowerEnum txPowerEnum = TxPowerEnum.fromTxPower(txPower);
                                             mBind.sbTriggerTxPower.setProgress(txPowerEnum.ordinal());
+                                            if (txPower == -40){
+                                                mBind.tvTriggerTxPower.setText(String.format("%ddBm", txPowerEnum.getTxPower()));
+                                            }
                                             mBind.etTriggerAdvTime.setText(String.valueOf(triggerAdvTime));
                                             mBind.llSlotTriggerParams.setVisibility(isTriggerOpen ? View.VISIBLE : View.GONE);
                                         }
@@ -256,7 +259,9 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
     }
 
     private LoadingMessageDialog mLoadingMessageDialog;
@@ -282,6 +287,7 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
     }
 
     private void back() {
+        EventBus.getDefault().unregister(this);
         Intent intent = new Intent();
         intent.putExtra(AppConstants.EXTRA_KEY_SLOT_TYPE, slotType);
         setResult(RESULT_OK, intent);
