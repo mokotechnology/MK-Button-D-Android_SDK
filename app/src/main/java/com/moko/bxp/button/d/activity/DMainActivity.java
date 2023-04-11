@@ -163,7 +163,7 @@ public class DMainActivity extends BaseActivity implements MokoScanDeviceCallbac
                 } else {
                     ToastUtils.showToast(DMainActivity.this, "Connection failed");
                 }
-                startScan();
+                if (null == animation)startScan();
             }
         }
         if (MokoConstants.ACTION_DISCOVER_SUCCESS.equals(action)) {
@@ -469,7 +469,7 @@ public class DMainActivity extends BaseActivity implements MokoScanDeviceCallbac
 
             @Override
             public void onDismiss() {
-
+                startScan();
             }
         });
         dialog.show(getSupportFragmentManager());

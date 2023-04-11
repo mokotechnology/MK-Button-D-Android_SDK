@@ -193,7 +193,9 @@ public class AlarmNotifyTypeActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
     }
 
     private LoadingMessageDialog mLoadingMessageDialog;
@@ -210,7 +212,17 @@ public class AlarmNotifyTypeActivity extends BaseActivity {
     }
 
     public void onBack(View view) {
+        back();
+    }
+
+    private void back(){
+        EventBus.getDefault().unregister(this);
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        back();
     }
 
     public void onSave(View view) {

@@ -106,6 +106,7 @@
             android:layout_toLeftOf="@id/effective_unit"
             android:gravity="center"
             android:hint="5 ~ 15"
+            android:inputType="number"
             android:textColor="@color/black_333333"
             android:textSize="15sp" />
 
