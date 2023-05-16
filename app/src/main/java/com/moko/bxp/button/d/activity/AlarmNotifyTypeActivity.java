@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.elvishew.xlog.XLog;
 import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
 import com.moko.ble.lib.event.OrderTaskResponseEvent;
@@ -125,13 +124,11 @@ public class AlarmNotifyTypeActivity extends BaseActivity {
                                 switch (configKeyEnum) {
                                     case KEY_SLOT_LED_NOTIFY_ALARM_PARAMS:
                                     case KEY_SLOT_BUZZER_NOTIFY_ALARM_PARAMS:
-                                        XLog.i("333333***"+MokoUtils.bytesToHexString(value));
                                         if (result == 0) {
                                             isConfigError = true;
                                         }
                                         break;
                                     case KEY_SLOT_TRIGGER_ALARM_NOTIFY_TYPE:
-                                        XLog.i("333333////"+MokoUtils.bytesToHexString(value));
                                         if (result == 0) {
                                             isConfigError = true;
                                         }
@@ -218,7 +215,7 @@ public class AlarmNotifyTypeActivity extends BaseActivity {
         back();
     }
 
-    private void back(){
+    private void back() {
         EventBus.getDefault().unregister(this);
         finish();
     }
