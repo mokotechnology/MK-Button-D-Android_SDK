@@ -330,7 +330,7 @@ public class ParamsTask extends OrderTask {
 
     public void setSlotLEDNotifyAlarmParams(@IntRange(from = 0, to = 3) int slot,
                                             @IntRange(from = 1, to = 6000) int time,
-                                            @IntRange(from = 100, to = 10000) int interval) {
+                                            @IntRange(from = 0, to = 100) int interval) {
         byte[] timeBytes = MokoUtils.toByteArray(time, 2);
         byte[] intervalBytes = MokoUtils.toByteArray(interval, 2);
         data = new byte[]{
@@ -390,7 +390,7 @@ public class ParamsTask extends OrderTask {
 
     public void setSlotBuzzerNotifyAlarmParams(@IntRange(from = 0, to = 3) int slot,
                                                @IntRange(from = 1, to = 6000) int time,
-                                               @IntRange(from = 100, to = 10000) int interval) {
+                                               @IntRange(from = 0, to = 100) int interval) {
         byte[] timeBytes = MokoUtils.toByteArray(time, 2);
         byte[] intervalBytes = MokoUtils.toByteArray(interval, 2);
         data = new byte[]{
@@ -408,7 +408,7 @@ public class ParamsTask extends OrderTask {
     }
 
     public void setRemoteLEDNotifyAlarmParams(@IntRange(from = 1, to = 6000) int time,
-                                              @IntRange(from = 100, to = 10000) int interval) {
+                                              @IntRange(from = 0, to = 100) int interval) {
         byte[] timeBytes = MokoUtils.toByteArray(time, 2);
         byte[] intervalBytes = MokoUtils.toByteArray(interval, 2);
         data = new byte[]{
@@ -425,7 +425,7 @@ public class ParamsTask extends OrderTask {
     }
 
     public void setRemoteBuzzerNotifyAlarmParams(@IntRange(from = 1, to = 6000) int time,
-                                                 @IntRange(from = 100, to = 10000) int interval) {
+                                                 @IntRange(from = 0, to = 100) int interval) {
         byte[] timeBytes = MokoUtils.toByteArray(time, 2);
         byte[] intervalBytes = MokoUtils.toByteArray(interval, 2);
         data = new byte[]{
@@ -453,7 +453,7 @@ public class ParamsTask extends OrderTask {
     }
 
     public void setDismissLEDNotifyAlarmParams(@IntRange(from = 1, to = 6000) int time,
-                                               @IntRange(from = 100, to = 10000) int interval) {
+                                               @IntRange(from = 0, to = 100) int interval) {
         byte[] timeBytes = MokoUtils.toByteArray(time, 2);
         byte[] intervalBytes = MokoUtils.toByteArray(interval, 2);
         data = new byte[]{
@@ -470,7 +470,7 @@ public class ParamsTask extends OrderTask {
     }
 
     public void setDismissBuzzerNotifyAlarmParams(@IntRange(from = 1, to = 6000) int time,
-                                                  @IntRange(from = 100, to = 10000) int interval) {
+                                                  @IntRange(from = 0, to = 100) int interval) {
         byte[] timeBytes = MokoUtils.toByteArray(time, 2);
         byte[] intervalBytes = MokoUtils.toByteArray(interval, 2);
         data = new byte[]{

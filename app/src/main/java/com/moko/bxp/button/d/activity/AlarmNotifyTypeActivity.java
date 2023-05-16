@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.elvishew.xlog.XLog;
 import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
 import com.moko.ble.lib.event.OrderTaskResponseEvent;
@@ -124,11 +125,13 @@ public class AlarmNotifyTypeActivity extends BaseActivity {
                                 switch (configKeyEnum) {
                                     case KEY_SLOT_LED_NOTIFY_ALARM_PARAMS:
                                     case KEY_SLOT_BUZZER_NOTIFY_ALARM_PARAMS:
+                                        XLog.i("333333***"+MokoUtils.bytesToHexString(value));
                                         if (result == 0) {
                                             isConfigError = true;
                                         }
                                         break;
                                     case KEY_SLOT_TRIGGER_ALARM_NOTIFY_TYPE:
+                                        XLog.i("333333////"+MokoUtils.bytesToHexString(value));
                                         if (result == 0) {
                                             isConfigError = true;
                                         }
@@ -169,7 +172,7 @@ public class AlarmNotifyTypeActivity extends BaseActivity {
                                             int time = MokoUtils.toInt(Arrays.copyOfRange(value, 5, 7));
                                             int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 7, 9));
                                             mBind.etBlinkingTime.setText(String.valueOf(time));
-                                            mBind.etBlinkingInterval.setText(String.valueOf(interval / 100));
+                                            mBind.etBlinkingInterval.setText(String.valueOf(interval));
                                         }
                                         break;
                                     case KEY_SLOT_BUZZER_NOTIFY_ALARM_PARAMS:
@@ -177,7 +180,7 @@ public class AlarmNotifyTypeActivity extends BaseActivity {
                                             int time = MokoUtils.toInt(Arrays.copyOfRange(value, 5, 7));
                                             int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 7, 9));
                                             mBind.etRingingTime.setText(String.valueOf(time));
-                                            mBind.etRingingInterval.setText(String.valueOf(interval / 100));
+                                            mBind.etRingingInterval.setText(String.valueOf(interval));
                                         }
                                         break;
                                 }
@@ -243,7 +246,7 @@ public class AlarmNotifyTypeActivity extends BaseActivity {
             String ledTimeStr = mBind.etBlinkingTime.getText().toString();
             String ledIntervalStr = mBind.etBlinkingInterval.getText().toString();
             int ledTime = Integer.parseInt(ledTimeStr);
-            int ledInterval = Integer.parseInt(ledIntervalStr) * 100;
+            int ledInterval = Integer.parseInt(ledIntervalStr);
             // LED/LED+Vibration/LED+Buzzer
             orderTasks.add(OrderTaskAssembler.setSlotLEDNotifyAlarmParams(slotType, ledTime, ledInterval));
         }
@@ -251,7 +254,7 @@ public class AlarmNotifyTypeActivity extends BaseActivity {
             String buzzerTimeStr = mBind.etRingingTime.getText().toString();
             String buzzerIntervalStr = mBind.etRingingInterval.getText().toString();
             int buzzerTime = Integer.parseInt(buzzerTimeStr);
-            int buzzerInterval = Integer.parseInt(buzzerIntervalStr) * 100;
+            int buzzerInterval = Integer.parseInt(buzzerIntervalStr);
             // Buzzer/LED+Buzzer
             orderTasks.add(OrderTaskAssembler.setSlotBuzzerNotifyAlarmParams(slotType, buzzerTime, buzzerInterval));
         }
@@ -274,7 +277,7 @@ public class AlarmNotifyTypeActivity extends BaseActivity {
             if (ledTime < 1 || ledTime > 6000)
                 return false;
             int ledInterval = Integer.parseInt(ledIntervalStr);
-            if (ledInterval < 1 || ledInterval > 100)
+            if (ledInterval < 0 || ledInterval > 100)
                 return false;
         }
         if (notifyType == 3 || notifyType == 5) {
@@ -285,7 +288,7 @@ public class AlarmNotifyTypeActivity extends BaseActivity {
             if (buzzerTime < 1 || buzzerTime > 6000)
                 return false;
             int buzzerInterval = Integer.parseInt(buzzerIntervalStr);
-            if (buzzerInterval < 1 || buzzerInterval > 100)
+            if (buzzerInterval < 0 || buzzerInterval > 100)
                 return false;
         }
         return true;

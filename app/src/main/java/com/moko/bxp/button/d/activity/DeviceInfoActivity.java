@@ -314,7 +314,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                                     case KEY_DEVICE_MAC:
                                         if (length == 6) {
                                             String mac = MokoUtils.bytesToHexString(Arrays.copyOfRange(value, 4, 10));
-                                            StringBuffer stringBuffer = new StringBuffer(mac);
+                                            StringBuilder stringBuffer = new StringBuilder(mac);
                                             stringBuffer.insert(2, ":");
                                             stringBuffer.insert(5, ":");
                                             stringBuffer.insert(8, ":");
@@ -331,8 +331,8 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                                         break;
 
                                     case KEY_SENSOR_TYPE:
-                                        if (length > 0) {
-                                            int val = MokoUtils.toInt(Arrays.copyOfRange(value, 4, value.length));
+                                        if (length == 2) {
+                                            int val = value[5] & 0xff;
                                             hasAcc = (val & 0x01) == 1;
                                             int b = (val >> 1) & 0x01;
                                             int c = (val >> 2) & 0x01;

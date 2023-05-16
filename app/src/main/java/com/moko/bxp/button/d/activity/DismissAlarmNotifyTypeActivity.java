@@ -167,7 +167,7 @@ public class DismissAlarmNotifyTypeActivity extends BaseActivity {
                                             int time = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
                                             int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 6, 8));
                                             mBind.etBlinkingTime.setText(String.valueOf(time));
-                                            mBind.etBlinkingInterval.setText(String.valueOf(interval / 100));
+                                            mBind.etBlinkingInterval.setText(String.valueOf(interval));
                                         }
                                         break;
                                     case KEY_DISMISS_BUZZER_NOTIFY_ALARM_PARAMS:
@@ -175,7 +175,7 @@ public class DismissAlarmNotifyTypeActivity extends BaseActivity {
                                             int time = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
                                             int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 6, 8));
                                             mBind.etRingingTime.setText(String.valueOf(time));
-                                            mBind.etRingingInterval.setText(String.valueOf(interval / 100));
+                                            mBind.etRingingInterval.setText(String.valueOf(interval));
                                         }
                                         break;
                                 }
@@ -237,7 +237,7 @@ public class DismissAlarmNotifyTypeActivity extends BaseActivity {
             String ledTimeStr = mBind.etBlinkingTime.getText().toString();
             String ledIntervalStr = mBind.etBlinkingInterval.getText().toString();
             int ledTime = Integer.parseInt(ledTimeStr);
-            int ledInterval = Integer.parseInt(ledIntervalStr) * 100;
+            int ledInterval = Integer.parseInt(ledIntervalStr);
             // LED/LED+Vibration/LED+Buzzer
             orderTasks.add(OrderTaskAssembler.setDismissLEDNotifyAlarmParams(ledTime, ledInterval));
         }
@@ -245,7 +245,7 @@ public class DismissAlarmNotifyTypeActivity extends BaseActivity {
             String buzzerTimeStr = mBind.etRingingTime.getText().toString();
             String buzzerIntervalStr = mBind.etRingingInterval.getText().toString();
             int buzzerTime = Integer.parseInt(buzzerTimeStr);
-            int buzzerInterval = Integer.parseInt(buzzerIntervalStr) * 100;
+            int buzzerInterval = Integer.parseInt(buzzerIntervalStr);
             // Buzzer/LED+Buzzer
             orderTasks.add(OrderTaskAssembler.setDismissBuzzerNotifyAlarmParams(buzzerTime, buzzerInterval));
         }
@@ -267,7 +267,7 @@ public class DismissAlarmNotifyTypeActivity extends BaseActivity {
             if (ledTime < 1 || ledTime > 6000)
                 return false;
             int ledInterval = Integer.parseInt(ledIntervalStr);
-            if (ledInterval < 1 || ledInterval > 100)
+            if (ledInterval < 0 || ledInterval > 100)
                 return false;
         }
         if (notifyType == 3 || notifyType == 5) {
@@ -278,7 +278,7 @@ public class DismissAlarmNotifyTypeActivity extends BaseActivity {
             if (buzzerTime < 1 || buzzerTime > 6000)
                 return false;
             int buzzerInterval = Integer.parseInt(buzzerIntervalStr);
-            if (buzzerInterval < 1 || buzzerInterval > 100)
+            if (buzzerInterval < 0 || buzzerInterval > 100)
                 return false;
         }
         return true;

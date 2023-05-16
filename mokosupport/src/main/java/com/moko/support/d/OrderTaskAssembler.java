@@ -331,7 +331,7 @@ public class OrderTaskAssembler {
 
     public static OrderTask setSlotLEDNotifyAlarmParams(@IntRange(from = 0, to = 3) int slot,
                                                         @IntRange(from = 1, to = 6000) int time,
-                                                        @IntRange(from = 100, to = 10000) int interval) {
+                                                        @IntRange(from = 0, to = 100) int interval) {
         ParamsTask task = new ParamsTask();
         task.setSlotLEDNotifyAlarmParams(slot, time, interval);
         return task;
@@ -345,7 +345,7 @@ public class OrderTaskAssembler {
 
     public static OrderTask setSlotBuzzerNotifyAlarmParams(@IntRange(from = 0, to = 3) int slot,
                                                            @IntRange(from = 1, to = 6000) int time,
-                                                           @IntRange(from = 100, to = 10000) int interval) {
+                                                           @IntRange(from = 0, to = 100) int interval) {
         ParamsTask task = new ParamsTask();
         task.setSlotBuzzerNotifyAlarmParams(slot, time, interval);
         return task;
@@ -358,7 +358,7 @@ public class OrderTaskAssembler {
     }
 
     public static OrderTask setRemoteLEDNotifyAlarmParams(@IntRange(from = 1, to = 6000) int time,
-                                                          @IntRange(from = 100, to = 10000) int interval) {
+                                                          @IntRange(from = 0, to = 100) int interval) {
         ParamsTask task = new ParamsTask();
         task.setRemoteLEDNotifyAlarmParams(time, interval);
         return task;
@@ -371,7 +371,7 @@ public class OrderTaskAssembler {
     }
 
     public static OrderTask setRemoteBuzzerNotifyAlarmParams(@IntRange(from = 1, to = 6000) int time,
-                                                             @IntRange(from = 100, to = 10000) int interval) {
+                                                             @IntRange(from = 0, to = 100) int interval) {
         ParamsTask task = new ParamsTask();
         task.setRemoteBuzzerNotifyAlarmParams(time, interval);
         return task;
@@ -402,7 +402,7 @@ public class OrderTaskAssembler {
     }
 
     public static OrderTask setDismissLEDNotifyAlarmParams(@IntRange(from = 1, to = 6000) int time,
-                                                           @IntRange(from = 100, to = 10000) int interval) {
+                                                           @IntRange(from = 0, to = 100) int interval) {
         ParamsTask task = new ParamsTask();
         task.setDismissLEDNotifyAlarmParams(time, interval);
         return task;
@@ -415,7 +415,7 @@ public class OrderTaskAssembler {
     }
 
     public static OrderTask setDismissBuzzerNotifyAlarmParams(@IntRange(from = 1, to = 6000) int time,
-                                                              @IntRange(from = 100, to = 10000) int interval) {
+                                                              @IntRange(from = 0, to = 100) int interval) {
         ParamsTask task = new ParamsTask();
         task.setDismissBuzzerNotifyAlarmParams(time, interval);
         return task;
