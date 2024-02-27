@@ -55,7 +55,7 @@ public class AdvInfoAnalysisImpl implements DeviceInfoAnalysis<AdvInfo> {
             final ParcelUuid parcelUuid = (ParcelUuid) iterator.next();
             if (parcelUuid.getUuid().equals(OrderServices.SERVICE_ADV_DEVICE.getUuid())) {
                 byte[] data = map.get(new ParcelUuid(OrderServices.SERVICE_ADV_DEVICE.getUuid()));
-                if (data == null || data.length == 0 || data.length < 21)
+                if (data == null || data.length < 21)
                     continue;
                 deviceInfoFrame = data[0] & 0xFF;
                 accX = MokoUtils.toIntSigned(Arrays.copyOfRange(data, 4, 6));
@@ -69,14 +69,15 @@ public class AdvInfoAnalysisImpl implements DeviceInfoAnalysis<AdvInfo> {
             }
             if (parcelUuid.getUuid().equals(OrderServices.SERVICE_ADV_TRIGGER.getUuid())) {
                 byte[] data = map.get(new ParcelUuid(OrderServices.SERVICE_ADV_TRIGGER.getUuid()));
-                if (data == null || data.length == 0 || data.length < 5)
-                    continue;
+                if (data == null || data.length < 7) continue;
                 dataStr = MokoUtils.bytesToHexString(data);
                 dataBytes = data;
                 triggerTypeFrame = data[0] & 0xFF;
                 verifyEnable = (data[1] & 0x01) == 0x01 ? 1 : 0;
                 triggerStatus = (data[1] & 0x02) == 0x02 ? 1 : 0;
                 triggerCount = MokoUtils.toInt(Arrays.copyOfRange(data, 2, 4));
+                XLog.i("mac="+deviceInfo.mac);
+                XLog.i("data="+Arrays.toString(data));
                 deviceId = String.format("0x%s", MokoUtils.bytesToHexString(Arrays.copyOfRange(data, 4, data.length - 2)).toUpperCase());
                 deviceType = data[data.length - 2] & 0xFF;
             }
