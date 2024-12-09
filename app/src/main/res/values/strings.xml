@@ -34,10 +34,17 @@
     <string name="rssi_filter_tips">* RSSI filtering is the highest priority filtering condition. BLE Name and MAC Address filtering must first meet the RSSI filtering condition.\n* There is an \"OR\" relationship between the BLE Name filtering and the MAC Address filtering.</string>
     <string name="abnormal_inactivity_time_tips">*After device keep static for %ss, abnormal inactivity alarm will be triggered and start advertising for %ss.</string>
     <string name="static_trigger_time_tips">*After device keep static for %ss, it will stop advertising and disable alarm mode to enter into power saving mode until device moves.</string>
+    <string name="adv_mode_tips">*Advertising mode mainly refers to the configuration of channel parameters for broadcasting in a non-connected state and the parameter settings related to alarm events, which are different from the parameters in long connection mode.</string>
+    <string name="long_connect_mode_tips">*Long connection mode mainly refers to the parameter settings related to alarm events and event monitoring display in a long connection state. To ensure the beacon can be connected, you need to make sure that at least one slot is enabled in Advertising Mode setting, allowing the device to continue broadcasting while in a non-connected state.</string>
     <string-array name="alarm_notify_type_d">
         <item>Silent</item>
         <item>LED</item>
         <item>Buzzer</item>
         <item>LED+Buzzer</item>
+    </string-array>
+    <string-array name="frame_type_array">
+        <item>Alarm info</item>
+        <item>UID</item>
+        <item>iBeacon</item>
     </string-array>
 </resources>

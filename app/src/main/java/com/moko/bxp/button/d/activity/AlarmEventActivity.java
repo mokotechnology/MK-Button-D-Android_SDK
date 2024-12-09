@@ -9,6 +9,7 @@ import com.moko.ble.lib.event.OrderTaskResponseEvent;
 import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
+import com.moko.bxp.button.d.AppConstants;
 import com.moko.bxp.button.d.databinding.DActivityAlarmEventBinding;
 import com.moko.bxp.button.d.dialog.LoadingMessageDialog;
 import com.moko.bxp.button.d.utils.ToastUtils;
@@ -32,7 +33,8 @@ public class AlarmEventActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         mBind = DActivityAlarmEventBinding.inflate(getLayoutInflater());
         setContentView(mBind.getRoot());
-
+        int firmware = getIntent().getIntExtra(AppConstants.EXTRA_KEY_DEVICE_TYPE, 0);
+        mBind.tvAlarmEventTips.setVisibility(firmware == 1 ? View.VISIBLE : View.GONE);
         EventBus.getDefault().register(this);
         if (!DMokoSupport.getInstance().isBluetoothOpen()) {
             // 蓝牙未打开，开启蓝牙

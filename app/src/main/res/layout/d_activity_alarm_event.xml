@@ -189,6 +189,14 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/lineDouble" />
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/tvAlarmEventTips"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="*The Alarm Count here mainly refers to the button press count in Advertising Mode under non-connected status."
+                android:textColor="@color/grey_999999" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

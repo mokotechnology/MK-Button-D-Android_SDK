@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import no.nordicsemi.android.support.v18.scanner.ScanRecord;
@@ -44,12 +45,35 @@ public class AdvInfoAnalysisImpl implements DeviceInfoAnalysis<AdvInfo> {
         int accZ = 0;
         int accShown = 0;
         int deviceInfoFrame = -1;
-        int triggerTypeFrame = -1;
+        int frameType = -1;
         int rangeData = -1;
         int verifyEnable = 0;
         int deviceType = 0;
-        String dataStr = "";
+        String uuid = "";
+        int major = 0;
+        int minor = 0;
+        int rssi1m = 0;
+        int rssi0m = 0;
+        String namespaceId = "";
+        String instanceId = "";
+//        String dataStr = "";
         byte[] dataBytes = new byte[0];
+        byte[] manufacturerBytes = record.getManufacturerSpecificData(0x004C);
+        if (null != manufacturerBytes && manufacturerBytes.length == 23) {
+            frameType = manufacturerBytes[0];
+            String uuidRaw = MokoUtils.bytesToHexString(Arrays.copyOfRange(manufacturerBytes, 2, 18)).toLowerCase(Locale.ROOT);
+            StringBuilder stringBuilder = new StringBuilder(uuidRaw);
+            stringBuilder.insert(8, "-");
+            stringBuilder.insert(13, "-");
+            stringBuilder.insert(18, "-");
+            stringBuilder.insert(23, "-");
+            uuid = stringBuilder.toString();
+            major = MokoUtils.toInt(Arrays.copyOfRange(manufacturerBytes, 18, 20));
+            minor = MokoUtils.toInt(Arrays.copyOfRange(manufacturerBytes, 20, 22));
+            rssi1m = manufacturerBytes[22];
+            dataBytes = manufacturerBytes;
+        }
+
         final Iterator iterator = map.keySet().iterator();
         while (iterator.hasNext()) {
             final ParcelUuid parcelUuid = (ParcelUuid) iterator.next();
@@ -70,16 +94,45 @@ public class AdvInfoAnalysisImpl implements DeviceInfoAnalysis<AdvInfo> {
             if (parcelUuid.getUuid().equals(OrderServices.SERVICE_ADV_TRIGGER.getUuid())) {
                 byte[] data = map.get(new ParcelUuid(OrderServices.SERVICE_ADV_TRIGGER.getUuid()));
                 if (data == null || data.length < 7) continue;
-                dataStr = MokoUtils.bytesToHexString(data);
+//                dataStr = MokoUtils.bytesToHexString(data);
                 dataBytes = data;
-                triggerTypeFrame = data[0] & 0xFF;
+                frameType = data[0] & 0xFF;
                 verifyEnable = (data[1] & 0x01) == 0x01 ? 1 : 0;
                 triggerStatus = (data[1] & 0x02) == 0x02 ? 1 : 0;
                 triggerCount = MokoUtils.toInt(Arrays.copyOfRange(data, 2, 4));
-                XLog.i("mac="+deviceInfo.mac);
-                XLog.i("data="+Arrays.toString(data));
+                XLog.i("mac=" + deviceInfo.mac);
+                XLog.i("data=" + Arrays.toString(data));
                 deviceId = String.format("0x%s", MokoUtils.bytesToHexString(Arrays.copyOfRange(data, 4, data.length - 2)).toUpperCase());
                 deviceType = data[data.length - 2] & 0xFF;
+            } else if (parcelUuid.getUuid().equals(OrderServices.SERVICE_ADV_IBEACON.getUuid())) {
+                byte[] data = map.get(new ParcelUuid(OrderServices.SERVICE_ADV_IBEACON.getUuid()));
+                if (data == null || data.length != 23) continue;
+//                dataStr = MokoUtils.bytesToHexString(data);
+                dataBytes = data;
+                frameType = data[0] & 0xFF;
+                rssi1m = data[1];
+                String uuidRaw = MokoUtils.bytesToHexString(Arrays.copyOfRange(data, 3, 19)).toLowerCase(Locale.ROOT);
+                StringBuilder stringBuilder = new StringBuilder(uuidRaw);
+                stringBuilder.insert(8, "-");
+                stringBuilder.insert(13, "-");
+                stringBuilder.insert(18, "-");
+                stringBuilder.insert(23, "-");
+                uuid = stringBuilder.toString();
+                major = MokoUtils.toInt(Arrays.copyOfRange(data, 19, 21));
+                minor = MokoUtils.toInt(Arrays.copyOfRange(data, 21, 23));
+                XLog.i("mac=" + deviceInfo.mac);
+                XLog.i("data=" + Arrays.toString(data));
+            } else if (parcelUuid.getUuid().equals(OrderServices.SERVICE_ADV_UID.getUuid())) {
+                byte[] data = map.get(new ParcelUuid(OrderServices.SERVICE_ADV_UID.getUuid()));
+                if (data == null || data.length != 20) continue;
+//                dataStr = MokoUtils.bytesToHexString(data);
+                dataBytes = data;
+                frameType = data[0] & 0xFF;
+                rssi0m = data[1];
+                namespaceId = MokoUtils.bytesToHexString(Arrays.copyOfRange(data, 2, 12));
+                instanceId = MokoUtils.bytesToHexString(Arrays.copyOfRange(data, 12, 18));
+                XLog.i("mac=" + deviceInfo.mac);
+                XLog.i("data=" + Arrays.toString(data));
             }
 
         }
@@ -130,17 +183,34 @@ public class AdvInfoAnalysisImpl implements DeviceInfoAnalysis<AdvInfo> {
             advInfo.deviceType = deviceType;
             advInfo.scanRecord = deviceInfo.scanRecord;
             advInfo.scanTime = SystemClock.elapsedRealtime();
-            advInfo.triggerDataHashMap = new LinkedHashMap<>();
+            advInfo.advDataHashMap = new LinkedHashMap<>();
             beaconXInfoHashMap.put(deviceInfo.mac, advInfo);
         }
-        if (triggerTypeFrame > 0) {
-            AdvInfo.TriggerData triggerData = new AdvInfo.TriggerData();
-            triggerData.dataStr = dataStr;
+        if (frameType == 0x00) {
+            AdvInfo.AdvData advData = new AdvInfo.AdvData();
+            advData.dataBytes = dataBytes;
+            advData.frameType = frameType;
+            advData.rssi0m = rssi0m;
+            advData.namespaceId = namespaceId;
+            advData.instanceId = instanceId;
+            advInfo.advDataHashMap.put(frameType, advData);
+        } else if (frameType == 0x02 || frameType == 0x50) {
+            AdvInfo.AdvData advData = new AdvInfo.AdvData();
+            advData.dataBytes = dataBytes;
+            advData.frameType = frameType;
+            advData.uuid = uuid;
+            advData.major = major;
+            advData.minor = minor;
+            advData.rssi1m = rssi1m;
+            advInfo.advDataHashMap.put(0x50, advData);
+        } else if (frameType == 0x20 || frameType == 0x21 || frameType == 0x22 || frameType == 0x23) {
+            AdvInfo.AdvData triggerData = new AdvInfo.AdvData();
+//            triggerData.dataStr = dataStr;
             triggerData.dataBytes = dataBytes;
-            triggerData.triggerType = triggerTypeFrame;
+            triggerData.frameType = frameType;
             triggerData.triggerStatus = triggerStatus;
             triggerData.triggerCount = triggerCount;
-            advInfo.triggerDataHashMap.put(triggerTypeFrame, triggerData);
+            advInfo.advDataHashMap.put(frameType, triggerData);
         }
         advInfo.deviceInfoFrame = deviceInfoFrame;
         if (deviceInfoFrame == 0) {

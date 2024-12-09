@@ -24,7 +24,7 @@ public class AdvInfo implements Serializable {
     public int deviceInfoFrame;
     public String beaconTemp;
     public String deviceId;
-    public LinkedHashMap<Integer, TriggerData> triggerDataHashMap;
+    public LinkedHashMap<Integer, AdvData> advDataHashMap;
 
     @Override
     public String toString() {
@@ -34,18 +34,25 @@ public class AdvInfo implements Serializable {
                 '}';
     }
 
-    public static class TriggerData {
-        public int triggerType;
+    public static class AdvData {
+        public int frameType;
         public int triggerStatus;
         public int triggerCount;
+        public int major;
+        public int minor;
+        public String uuid;
+        public int rssi1m;
+        public int rssi0m;
+        public String instanceId;
+        public String namespaceId;
         public byte[] dataBytes;
-        public String dataStr;
+//        public String dataStr;
 
         @Override
         public String toString() {
-            return "TriggerData{" +
-                    "triggerType=" + triggerType +
-                    ", data='" + dataStr + '\'' +
+            return "AdvData{" +
+                    "frameType=" + frameType +
+//                    ", data='" + dataStr + '\'' +
                     '}';
         }
     }

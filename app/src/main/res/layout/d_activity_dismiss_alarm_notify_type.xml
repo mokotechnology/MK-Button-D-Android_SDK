@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/grey_f2f2f2"
     android:orientation="vertical">
 
@@ -130,11 +130,11 @@
                     android:id="@+id/cl_led_notify"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:background="@drawable/shape_radius_white_bg"
                     android:layout_marginTop="10dp"
-                    tools:visibility="visible"
-                    android:visibility="gone">
+                    android:background="@drawable/shape_radius_white_bg"
+                    android:padding="10dp"
+                    android:visibility="gone"
+                    tools:visibility="visible">
 
                     <TextView
                         android:id="@+id/led_notify"
@@ -232,11 +232,11 @@
                     android:id="@+id/cl_buzzer_notify"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:background="@drawable/shape_radius_white_bg"
                     android:layout_marginTop="10dp"
-                    tools:visibility="visible"
-                    android:visibility="gone">
+                    android:background="@drawable/shape_radius_white_bg"
+                    android:padding="10dp"
+                    android:visibility="gone"
+                    tools:visibility="visible">
 
                     <TextView
                         android:id="@+id/buzzer_notify"
@@ -330,6 +330,14 @@
                         app:layout_constraintLeft_toLeftOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvDismissAlarmTips"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="*The  Dismiss alarm notification here mainly refers to the dismiss alarm notification setting in Advertising Mode under non-connected status."
+                android:textColor="@color/grey_999999" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

@@ -1,5 +1,6 @@
 package com.moko.bxp.button.d.activity;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -33,7 +34,9 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnSeekBarChangeListener {
+import cn.carbswang.android.numberpickerview.library.NumberPickerView;
+
+public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnSeekBarChangeListener, NumberPickerView.OnValueChangeListener {
 
     private DActivityAlarmModeConfigBinding mBind;
     public boolean isConfigError;
@@ -41,6 +44,9 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
     private boolean isAdvOpen;
     private boolean isTriggerOpen;
     private boolean isAdvBeforeTriggerOpen;
+    private int mFirmwareType;
+    private int mFrameType;
+    public int mNotifyType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +55,7 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
         setContentView(mBind.getRoot());
         if (getIntent() != null && getIntent().getExtras() != null) {
             slotType = getIntent().getIntExtra(AppConstants.EXTRA_KEY_SLOT_TYPE, 0);
+            mFirmwareType = getIntent().getIntExtra(AppConstants.EXTRA_KEY_DEVICE_TYPE, 0);
         }
         switch (slotType) {
             case 0:
@@ -67,6 +74,22 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
         if (slotType == 3) {
             mBind.rlAbnormalInactivityTime.setVisibility(View.VISIBLE);
         }
+        mBind.rlFrameType.setVisibility(mFirmwareType == 1 ? View.VISIBLE : View.GONE);
+        String[] frameTypeArray = getResources().getStringArray(R.array.frame_type_array);
+        mBind.npvFrameType.setDisplayedValues(frameTypeArray);
+        mBind.npvFrameType.setMinValue(0);
+        mBind.npvFrameType.setMaxValue(frameTypeArray.length - 1);
+        mBind.npvFrameType.setValue(mFrameType);
+        mBind.npvFrameType.setOnValueChangedListener(this);
+
+
+        String[] alarmNotifyTypeArray = getResources().getStringArray(R.array.alarm_notify_type_d);
+        mBind.npvNotifyType.setDisplayedValues(alarmNotifyTypeArray);
+        mBind.npvNotifyType.setMinValue(0);
+        mBind.npvNotifyType.setMaxValue(alarmNotifyTypeArray.length - 1);
+        mBind.npvNotifyType.setValue(mNotifyType);
+        mBind.npvNotifyType.setOnValueChangedListener(this);
+
         mBind.sbAdvRangeData.setOnSeekBarChangeListener(this);
         mBind.sbTxPower.setOnSeekBarChangeListener(this);
         mBind.sbTriggerTxPower.setOnSeekBarChangeListener(this);
@@ -113,12 +136,18 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
         } else {
             showSyncingProgressDialog();
             ArrayList<OrderTask> orderTasks = new ArrayList<>();
+            if (mFirmwareType == 1) {
+                orderTasks.add(OrderTaskAssembler.getFrameType(slotType));
+            }
             orderTasks.add(OrderTaskAssembler.getSlotParams(slotType));
             orderTasks.add(OrderTaskAssembler.getSlotTriggerParams(slotType));
             orderTasks.add(OrderTaskAssembler.getSlotAdvBeforeTriggerEnable(slotType));
             if (slotType == 3) {
                 orderTasks.add(OrderTaskAssembler.getAbnormalInactivityAlarmStaticInterval());
             }
+            orderTasks.add(OrderTaskAssembler.getSlotTriggerAlarmNotifyType(slotType));
+            orderTasks.add(OrderTaskAssembler.getSlotLEDNotifyAlarmParams(slotType));
+            orderTasks.add(OrderTaskAssembler.getSlotBuzzerNotifyAlarmParams(slotType));
             DMokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         }
     }
@@ -173,11 +202,15 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
                                     case KEY_SLOT_PARAMS:
                                     case KEY_ABNORMAL_INACTIVITY_ALARM_STATIC_INTERVAL:
                                     case KEY_SLOT_ADV_BEFORE_TRIGGER_ENABLE:
+                                    case KEY_FRAME_TYPE:
+                                    case KEY_SLOT_TRIGGER_PARAMS:
+                                    case KEY_SLOT_LED_NOTIFY_ALARM_PARAMS:
+                                    case KEY_SLOT_BUZZER_NOTIFY_ALARM_PARAMS:
                                         if (result == 0) {
                                             isConfigError = true;
                                         }
                                         break;
-                                    case KEY_SLOT_TRIGGER_PARAMS:
+                                    case KEY_SLOT_TRIGGER_ALARM_NOTIFY_TYPE:
                                         if (result == 0) {
                                             isConfigError = true;
                                         }
@@ -192,6 +225,25 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
                             if (flag == 0x00) {
                                 // read
                                 switch (configKeyEnum) {
+                                    case KEY_FRAME_TYPE:
+                                        if (length > 2 && value[4] == slotType) {
+                                            mFrameType = value[5] & 0xFF;
+                                            mBind.llUidAdvContent.setVisibility(mFrameType == 1 ? View.VISIBLE : View.GONE);
+                                            mBind.llIBeaconAdvContent.setVisibility(mFrameType == 2 ? View.VISIBLE : View.GONE);
+                                            if (mFrameType == 1) {
+                                                String namespaceId = MokoUtils.bytesToHexString(Arrays.copyOfRange(value, 6, 16));
+                                                String instanceId = MokoUtils.bytesToHexString(Arrays.copyOfRange(value, 16, 22));
+                                                mBind.etNamespace.setText(namespaceId);
+                                                mBind.etInstanceId.setText(instanceId);
+                                            } else if (mFrameType == 2) {
+                                                String uuid = MokoUtils.bytesToHexString(Arrays.copyOfRange(value, 6, 22));
+                                                mBind.etUuid.setText(uuid);
+                                                mBind.etMajor.setText(String.valueOf(MokoUtils.toInt(Arrays.copyOfRange(value, 22, 24))));
+                                                mBind.etMinor.setText(String.valueOf(MokoUtils.toInt(Arrays.copyOfRange(value, 24, 26))));
+                                            }
+                                            mBind.npvFrameType.setValue(mFrameType);
+                                        }
+                                        break;
                                     case KEY_SLOT_PARAMS:
                                         if (length == 6 && value[4] == slotType) {
                                             int slotEnable = value[5] & 0xFF;
@@ -226,7 +278,7 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
                                             mBind.etTriggerAdvInterval.setText(String.valueOf(triggerAdvInterval / 20));
                                             TxPowerEnum txPowerEnum = TxPowerEnum.fromTxPower(txPower);
                                             mBind.sbTriggerTxPower.setProgress(txPowerEnum.ordinal());
-                                            if (txPower == -40){
+                                            if (txPower == -40) {
                                                 mBind.tvTriggerTxPower.setText(String.format("%ddBm", txPowerEnum.getTxPower()));
                                             }
                                             mBind.etTriggerAdvTime.setText(String.valueOf(triggerAdvTime));
@@ -244,6 +296,43 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
                                         if (length == 0x02) {
                                             int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
                                             mBind.etAbnormalInactivityTime.setText(String.valueOf(interval));
+                                        }
+                                        break;
+                                    case KEY_SLOT_TRIGGER_ALARM_NOTIFY_TYPE:
+                                        if (length == 2 && value[4] == slotType) {
+                                            mNotifyType = value[5] & 0xFF;
+                                            int type = mNotifyType;
+                                            if (mNotifyType == 3) type = mNotifyType - 1;
+                                            if (mNotifyType == 5) type = mNotifyType - 2;
+                                            mBind.npvNotifyType.setValue(type);
+                                            if (mNotifyType == 1 || mNotifyType == 5) {
+                                                // LED/LED+Vibration/LED+Buzzer
+                                                mBind.clLedNotify.setVisibility(View.VISIBLE);
+                                            } else {
+                                                mBind.clLedNotify.setVisibility(View.GONE);
+                                            }
+                                            if (mNotifyType == 3 || mNotifyType == 5) {
+                                                // Buzzer/LED+Buzzer
+                                                mBind.clBuzzerNotify.setVisibility(View.VISIBLE);
+                                            } else {
+                                                mBind.clBuzzerNotify.setVisibility(View.GONE);
+                                            }
+                                        }
+                                        break;
+                                    case KEY_SLOT_LED_NOTIFY_ALARM_PARAMS:
+                                        if (length == 5 && value[4] == slotType) {
+                                            int time = MokoUtils.toInt(Arrays.copyOfRange(value, 5, 7));
+                                            int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 7, 9));
+                                            mBind.etBlinkingTime.setText(String.valueOf(time));
+                                            mBind.etBlinkingInterval.setText(String.valueOf(interval));
+                                        }
+                                        break;
+                                    case KEY_SLOT_BUZZER_NOTIFY_ALARM_PARAMS:
+                                        if (length == 5 && value[4] == slotType) {
+                                            int time = MokoUtils.toInt(Arrays.copyOfRange(value, 5, 7));
+                                            int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 7, 9));
+                                            mBind.etRingingTime.setText(String.valueOf(time));
+                                            mBind.etRingingInterval.setText(String.valueOf(interval));
                                         }
                                         break;
                                 }
@@ -297,7 +386,6 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
     public void onSave(View view) {
         if (isWindowLocked())
             return;
-
         if (isValid()) {
             showSyncingProgressDialog();
             saveParams();
@@ -311,6 +399,7 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
         String triggerAdvTimeStr = mBind.etTriggerAdvTime.getText().toString();
         String triggerAdvIntervalStr = mBind.etTriggerAdvInterval.getText().toString();
         String abnormalInactivityTimeStr = mBind.etAbnormalInactivityTime.getText().toString();
+
         int advInterval = Integer.parseInt(advIntervalStr);
         int triggerAdvTime = Integer.parseInt(triggerAdvTimeStr);
         int triggerAdvInterval = Integer.parseInt(triggerAdvIntervalStr);
@@ -335,6 +424,40 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
                 TxPowerEnum.fromOrdinal(mBind.sbTriggerTxPower.getProgress()).getTxPower(),
                 triggerAdvTime));
 
+        if (mFirmwareType == 1) {
+            if (mFrameType == 1) {
+                String namespaceId = mBind.etNamespace.getText().toString();
+                String instanceId = mBind.etInstanceId.getText().toString();
+                orderTasks.add(OrderTaskAssembler.setUidFrameType(slotType, namespaceId, instanceId));
+            } else if (mFrameType == 2) {
+                String uuid = mBind.etUuid.getText().toString();
+                String majorStr = mBind.etMajor.getText().toString();
+                String minorStr = mBind.etMinor.getText().toString();
+                int major = Integer.parseInt(majorStr);
+                int minor = Integer.parseInt(minorStr);
+                orderTasks.add(OrderTaskAssembler.setIBeaconFrameType(slotType, uuid, major, minor));
+            } else {
+                orderTasks.add(OrderTaskAssembler.setAlarmFrameType(slotType));
+            }
+        }
+
+        if (mNotifyType == 1 || mNotifyType == 5) {
+            String ledTimeStr = mBind.etBlinkingTime.getText().toString();
+            String ledIntervalStr = mBind.etBlinkingInterval.getText().toString();
+            int ledTime = Integer.parseInt(ledTimeStr);
+            int ledInterval = Integer.parseInt(ledIntervalStr);
+            // LED/LED+Vibration/LED+Buzzer
+            orderTasks.add(OrderTaskAssembler.setSlotLEDNotifyAlarmParams(slotType, ledTime, ledInterval));
+        }
+        if (mNotifyType == 3 || mNotifyType == 5) {
+            String buzzerTimeStr = mBind.etRingingTime.getText().toString();
+            String buzzerIntervalStr = mBind.etRingingInterval.getText().toString();
+            int buzzerTime = Integer.parseInt(buzzerTimeStr);
+            int buzzerInterval = Integer.parseInt(buzzerIntervalStr);
+            // Buzzer/LED+Buzzer
+            orderTasks.add(OrderTaskAssembler.setSlotBuzzerNotifyAlarmParams(slotType, buzzerTime, buzzerInterval));
+        }
+        orderTasks.add(OrderTaskAssembler.setSlotTriggerAlarmNotifyType(slotType, mNotifyType));
         DMokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 
@@ -348,6 +471,21 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
                 || TextUtils.isEmpty(triggerAdvIntervalStr)
                 || (slotType == 3 && TextUtils.isEmpty(abnormalInactivityTimeStr))) {
             return false;
+        }
+        if (mFrameType == 1) {
+            String namespaceId = mBind.etNamespace.getText().toString();
+            String instanceId = mBind.etInstanceId.getText().toString();
+            if (TextUtils.isEmpty(namespaceId) || namespaceId.length() != 20
+                    || TextUtils.isEmpty(instanceId) || instanceId.length() != 12)
+                return false;
+        } else if (mFrameType == 2) {
+            String uuid = mBind.etUuid.getText().toString();
+            String majorStr = mBind.etMajor.getText().toString();
+            String minorStr = mBind.etMinor.getText().toString();
+            if (TextUtils.isEmpty(uuid) || uuid.length() != 32
+                    || TextUtils.isEmpty(majorStr) || Integer.parseInt(majorStr) > 65535
+                    || TextUtils.isEmpty(minorStr) || Integer.parseInt(minorStr) > 65535)
+                return false;
         }
         int advInterval = Integer.parseInt(advIntervalStr);
         if (advInterval < 1 || advInterval > 500)
@@ -363,7 +501,62 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
             if (abnormalInactivityTime < 1 || abnormalInactivityTime > 65535)
                 return false;
         }
+        if (mNotifyType == 0)
+            return true;
+        String ledTimeStr = mBind.etBlinkingTime.getText().toString();
+        String ledIntervalStr = mBind.etBlinkingInterval.getText().toString();
+        String buzzerTimeStr = mBind.etRingingTime.getText().toString();
+        String buzzerIntervalStr = mBind.etRingingInterval.getText().toString();
+        if (mNotifyType == 1 || mNotifyType == 5) {
+            if (TextUtils.isEmpty(ledTimeStr) || TextUtils.isEmpty(ledIntervalStr)) {
+                return false;
+            }
+            int ledTime = Integer.parseInt(ledTimeStr);
+            if (ledTime < 1 || ledTime > 6000)
+                return false;
+            int ledInterval = Integer.parseInt(ledIntervalStr);
+            if (ledInterval < 0 || ledInterval > 100)
+                return false;
+        }
+        if (mNotifyType == 3 || mNotifyType == 5) {
+            if (TextUtils.isEmpty(buzzerTimeStr) || TextUtils.isEmpty(buzzerIntervalStr)) {
+                return false;
+            }
+            int buzzerTime = Integer.parseInt(buzzerTimeStr);
+            if (buzzerTime < 1 || buzzerTime > 6000)
+                return false;
+            int buzzerInterval = Integer.parseInt(buzzerIntervalStr);
+            if (buzzerInterval < 0 || buzzerInterval > 100)
+                return false;
+        }
         return true;
+    }
+
+    @Override
+    public void onValueChange(NumberPickerView picker, int oldVal, int newVal) {
+        XLog.i(newVal + "");
+        XLog.i(picker.getContentByCurrValue());
+        if (picker.getId() == R.id.npv_frame_type) {
+            mFrameType = newVal;
+            mBind.llUidAdvContent.setVisibility(mFrameType == 1 ? View.VISIBLE : View.GONE);
+            mBind.llIBeaconAdvContent.setVisibility(mFrameType == 2 ? View.VISIBLE : View.GONE);
+        } else if (picker.getId() == R.id.npv_notify_type) {
+            mNotifyType = newVal;
+            if (newVal == 2) mNotifyType = newVal + 1;
+            if (newVal == 3) mNotifyType = newVal + 2;
+            if (mNotifyType == 1 || mNotifyType == 5) {
+                // LED /LED+Buzzer
+                mBind.clLedNotify.setVisibility(View.VISIBLE);
+            } else {
+                mBind.clLedNotify.setVisibility(View.GONE);
+            }
+            if (mNotifyType == 3 || mNotifyType == 5) {
+                // Buzzer/LED+Buzzer
+                mBind.clBuzzerNotify.setVisibility(View.VISIBLE);
+            } else {
+                mBind.clBuzzerNotify.setVisibility(View.GONE);
+            }
+        }
     }
 
     @Override
@@ -412,11 +605,16 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
         mBind.ivAdvBeforeTriggered.setImageResource(isAdvBeforeTriggerOpen ? R.drawable.ic_checked : R.drawable.ic_unchecked);
     }
 
+    private boolean mTriggerNotifyTypeEnable;
+
     public void onTriggerNotifyType(View view) {
         if (isWindowLocked())
             return;
-        Intent intent = new Intent(this, AlarmNotifyTypeActivity.class);
-        intent.putExtra(AppConstants.EXTRA_KEY_SLOT_TYPE, slotType);
-        startActivity(intent);
+        mTriggerNotifyTypeEnable = !mTriggerNotifyTypeEnable;
+        if (mTriggerNotifyTypeEnable)
+            ObjectAnimator.ofFloat(mBind.ivTriggerNotifyTypeEnable, "rotation", 0, 90).start();
+        else
+            ObjectAnimator.ofFloat(mBind.ivTriggerNotifyTypeEnable, "rotation", 90, 0).start();
+        mBind.llAlarmNotifyType.setVisibility(mTriggerNotifyTypeEnable ? View.VISIBLE : View.GONE);
     }
 }

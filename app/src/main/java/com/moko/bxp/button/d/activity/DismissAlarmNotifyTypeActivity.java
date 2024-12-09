@@ -10,6 +10,7 @@ import com.moko.ble.lib.event.OrderTaskResponseEvent;
 import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
+import com.moko.bxp.button.d.AppConstants;
 import com.moko.bxp.button.d.R;
 import com.moko.bxp.button.d.databinding.DActivityDismissAlarmNotifyTypeBinding;
 import com.moko.bxp.button.d.dialog.LoadingMessageDialog;
@@ -37,7 +38,8 @@ public class DismissAlarmNotifyTypeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         mBind = DActivityDismissAlarmNotifyTypeBinding.inflate(getLayoutInflater());
         setContentView(mBind.getRoot());
-
+        int firmware = getIntent().getIntExtra(AppConstants.EXTRA_KEY_DEVICE_TYPE, 0);
+        mBind.tvDismissAlarmTips.setVisibility(firmware == 1 ? View.VISIBLE : View.GONE);
         String[] dismissAlarmNotifyTypeArray = getResources().getStringArray(R.array.alarm_notify_type_d);
         mBind.npvNotifyType.setDisplayedValues(dismissAlarmNotifyTypeArray);
         mBind.npvNotifyType.setMinValue(0);

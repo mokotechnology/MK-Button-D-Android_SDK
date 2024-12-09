@@ -16,10 +16,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.elvishew.xlog.XLog;
 import com.moko.ble.lib.MokoConstants;
@@ -55,10 +51,15 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
+
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 public class DMainActivity extends BaseActivity implements MokoScanDeviceCallback, BaseQuickAdapter.OnItemChildClickListener {
     private DActivityMainBinding mBind;
@@ -71,6 +72,8 @@ public class DMainActivity extends BaseActivity implements MokoScanDeviceCallbac
     private boolean isPasswordError;
 
     public static String PATH_LOGCAT;
+
+    private int mFirmwareType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,24 +166,24 @@ public class DMainActivity extends BaseActivity implements MokoScanDeviceCallbac
                 } else {
                     ToastUtils.showToast(DMainActivity.this, "Connection failed");
                 }
-                if (null == animation)startScan();
+                if (null == animation) startScan();
             }
         }
         if (MokoConstants.ACTION_DISCOVER_SUCCESS.equals(action)) {
             // 设备连接成功，通知页面更新
             dismissLoadingProgressDialog();
-            if (TextUtils.isEmpty(mPassword)) {
-                Intent i = new Intent(this, DeviceInfoActivity.class);
-                startActivityForResult(i, AppConstants.REQUEST_CODE_DEVICE_INFO);
-            } else {
-                showLoadingMessageDialog();
-                mHandler.postDelayed(() -> {
-                    ArrayList<OrderTask> orderTasks = new ArrayList<>();
-                    orderTasks.add(OrderTaskAssembler.setPassword(mPassword));
-                    DMokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
-                }, 500);
-            }
-
+//            if (TextUtils.isEmpty(mPassword)) {
+//                Intent i = new Intent(this, DeviceInfoActivity.class);
+//                startActivityForResult(i, AppConstants.REQUEST_CODE_DEVICE_INFO);
+//            } else {
+            showLoadingProgressDialog();
+            mHandler.postDelayed(() -> {
+                ArrayList<OrderTask> orderTasks = new ArrayList<>();
+                orderTasks.add(OrderTaskAssembler.getVerifyPasswordEnable());
+//                orderTasks.add(OrderTaskAssembler.setPassword(mPassword));
+                DMokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
+            }, 500);
+//            }
         }
     }
 
@@ -205,7 +208,45 @@ public class DMainActivity extends BaseActivity implements MokoScanDeviceCallbac
                         return;
                     }
                     Intent i = new Intent(this, DeviceInfoActivity.class);
+                    i.putExtra(AppConstants.EXTRA_KEY_DEVICE_TYPE, mFirmwareType);
                     startActivityForResult(i, AppConstants.REQUEST_CODE_DEVICE_INFO);
+                    break;
+                case CHAR_PARAMS:
+                    if (value.length > 4) {
+                        int header = value[0] & 0xFF;// 0xEB
+                        int flag = value[1] & 0xFF;// read or write
+                        int cmd = value[2] & 0xFF;
+                        if (header != 0xEB)
+                            return;
+                        ParamsKeyEnum configKeyEnum = ParamsKeyEnum.fromParamKey(cmd);
+                        if (configKeyEnum == null) {
+                            return;
+                        }
+                        int length = value[3] & 0xFF;
+                        if (flag == 0x00) {
+                            // read
+                            switch (configKeyEnum) {
+                                case KEY_FIRMWARE_TYPE:
+                                    if (length == 1) {
+                                        mFirmwareType = value[4];
+                                        DMokoSupport.getInstance().sendOrder(OrderTaskAssembler.getSoftwareVersion(mFirmwareType));
+                                    }
+                                    break;
+                                case KEY_SOFTWARE_REVISION:
+                                    byte[] rawDataBytes = Arrays.copyOfRange(value, 4, 4 + length);
+                                    String softwareVersionStr = new String(rawDataBytes).trim();
+                                    dismissLoadingMessageDialog();
+                                    if (!softwareVersionStr.contains("BXP-B-D")) {
+                                        showDeviceTypeErrorDialog();
+                                        return;
+                                    }
+                                    Intent intent = new Intent(this, DeviceInfoActivity.class);
+                                    intent.putExtra(AppConstants.EXTRA_KEY_DEVICE_TYPE, mFirmwareType);
+                                    startActivityForResult(intent, AppConstants.REQUEST_CODE_DEVICE_INFO);
+                                    break;
+                            }
+                        }
+                    }
                     break;
                 case CHAR_PASSWORD:
                     if (value.length == 5) {
@@ -219,24 +260,34 @@ public class DMainActivity extends BaseActivity implements MokoScanDeviceCallbac
                             return;
                         }
                         int length = value[3] & 0xFF;
-                        if (flag == 0x01 && length == 0x01) {
-                            // write
-                            int result = value[4] & 0xFF;
-                            switch (configKeyEnum) {
-                                case KEY_PASSWORD:
+                        int result = value[4] & 0xFF;
+                        // write
+                        switch (configKeyEnum) {
+                            case KEY_PASSWORD:
+                                if (flag == 0x01) {
                                     if (result == 0xAA) {
                                         mSavedPassword = mPassword;
                                         SPUtiles.setStringValue(this, AppConstants.SP_KEY_SAVED_PASSWORD, mSavedPassword);
                                         XLog.i("Success");
-                                        DMokoSupport.getInstance().sendOrder(OrderTaskAssembler.getSoftwareVersion());
+                                        DMokoSupport.getInstance().sendOrder(OrderTaskAssembler.getFirmwareType());
                                     } else {
                                         dismissLoadingMessageDialog();
                                         isPasswordError = true;
                                         ToastUtils.showToast(this, "Password incorrect！");
                                         DMokoSupport.getInstance().disConnectBle();
                                     }
-                                    break;
-                            }
+                                }
+                                break;
+                            case KEY_VERIFY_PASSWORD_ENABLE:
+                                if (length > 0) {
+                                    if (result == 1) {
+                                        dismissLoadingProgressDialog();
+                                        showPasswordDialog();
+                                    } else {
+                                        DMokoSupport.getInstance().sendOrder(OrderTaskAssembler.getFirmwareType());
+                                    }
+                                }
+                                break;
                         }
                     }
                     break;
@@ -440,13 +491,13 @@ public class DMainActivity extends BaseActivity implements MokoScanDeviceCallbac
                 mokoBleScanner.stopScanDevice();
             }
             mSelectedDeviceMac = advInfo.mac;
-            if (advInfo.verifyEnable == 1) {
-                // 开启验证
-                showPasswordDialog();
-            } else {
-                showLoadingProgressDialog();
-                mBind.ivRefresh.postDelayed(() -> DMokoSupport.getInstance().connDevice(advInfo.mac), 500);
-            }
+//            if (advInfo.verifyEnable == 1) {
+//                // 开启验证
+//                showPasswordDialog();
+//            } else {
+            showLoadingProgressDialog();
+            mBind.ivRefresh.postDelayed(() -> DMokoSupport.getInstance().connDevice(advInfo.mac), 500);
+//            }
         }
     }
 
@@ -463,12 +514,17 @@ public class DMainActivity extends BaseActivity implements MokoScanDeviceCallbac
                 }
                 XLog.i(password);
                 mPassword = password;
-                showLoadingProgressDialog();
-                mBind.ivRefresh.postDelayed(() -> DMokoSupport.getInstance().connDevice(mSelectedDeviceMac), 500);
+                showLoadingMessageDialog();
+//                mBind.ivRefresh.postDelayed(() -> DMokoSupport.getInstance().connDevice(mSelectedDeviceMac), 500);
+                mBind.ivRefresh.postDelayed(() -> DMokoSupport.getInstance().sendOrder(OrderTaskAssembler.setPassword(mPassword)), 500);
             }
 
             @Override
             public void onDismiss() {
+                if (DMokoSupport.getInstance().isConnDevice(mSelectedDeviceMac)) {
+                    DMokoSupport.getInstance().disConnectBle();
+                    return;
+                }
                 startScan();
             }
         });

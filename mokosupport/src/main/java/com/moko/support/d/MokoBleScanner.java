@@ -43,9 +43,21 @@ public final class MokoBleScanner {
                 .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
                 .build();
         List<ScanFilter> scanFilterList = new ArrayList<>();
-        ScanFilter.Builder builder = new ScanFilter.Builder();
-        builder.setServiceData(new ParcelUuid(OrderServices.SERVICE_ADV_TRIGGER.getUuid()), null);
-        scanFilterList.add(builder.build());
+        ScanFilter.Builder deviceInfoBuilder = new ScanFilter.Builder();
+        deviceInfoBuilder.setServiceData(new ParcelUuid(OrderServices.SERVICE_ADV_DEVICE.getUuid()), null);
+        scanFilterList.add(deviceInfoBuilder.build());
+        ScanFilter.Builder triggerBuilder = new ScanFilter.Builder();
+        triggerBuilder.setServiceData(new ParcelUuid(OrderServices.SERVICE_ADV_TRIGGER.getUuid()), null);
+        scanFilterList.add(triggerBuilder.build());
+        ScanFilter.Builder uidBuilder = new ScanFilter.Builder();
+        uidBuilder.setServiceData(new ParcelUuid(OrderServices.SERVICE_ADV_UID.getUuid()), null);
+        scanFilterList.add(uidBuilder.build());
+        ScanFilter.Builder iBeaconBuilder = new ScanFilter.Builder();
+        iBeaconBuilder.setServiceData(new ParcelUuid(OrderServices.SERVICE_ADV_IBEACON.getUuid()), null);
+        scanFilterList.add(iBeaconBuilder.build());
+        ScanFilter.Builder appleiBeaconBuilder = new ScanFilter.Builder();
+        appleiBeaconBuilder.setManufacturerData(0x004C, null);
+        scanFilterList.add(appleiBeaconBuilder.build());
         mMokoLeScanHandler = new MokoLeScanHandler(callback);
         scanner.startScan(scanFilterList, settings, mMokoLeScanHandler);
         callback.onStartScan();

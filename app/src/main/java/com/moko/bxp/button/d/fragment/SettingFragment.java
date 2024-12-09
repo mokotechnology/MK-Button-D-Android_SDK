@@ -60,17 +60,21 @@ public class SettingFragment extends Fragment {
         DMokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 
-    public void setAccAndPowerSaveVisibility(boolean hasAcc){
-        if (hasAcc){
+    public void setAccAndPowerSaveVisibility(boolean hasAcc) {
+        if (hasAcc) {
             mBind.tvAcc.setVisibility(View.VISIBLE);
             mBind.lineAcc.setVisibility(View.VISIBLE);
             mBind.tvPowerSave.setVisibility(View.VISIBLE);
             mBind.linePowerSave.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             mBind.tvAcc.setVisibility(View.GONE);
             mBind.lineAcc.setVisibility(View.GONE);
             mBind.tvPowerSave.setVisibility(View.GONE);
             mBind.linePowerSave.setVisibility(View.GONE);
         }
+    }
+
+    public void setResetBatteryVisible(int mFirmwareType) {
+        mBind.llResetBattery.setVisibility(mFirmwareType == 1 ? View.VISIBLE : View.GONE);
     }
 }

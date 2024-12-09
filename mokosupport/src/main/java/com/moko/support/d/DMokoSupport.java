@@ -146,6 +146,9 @@ public class DMokoSupport extends MokoBleLib {
         if (responseUUID.equals(OrderCHAR.CHAR_LONG_TRIGGER.getUuid())) {
             orderCHAR = OrderCHAR.CHAR_LONG_TRIGGER;
         }
+        if (responseUUID.equals(OrderCHAR.CHAR_CLICK_EVENT.getUuid())) {
+            orderCHAR = OrderCHAR.CHAR_CLICK_EVENT;
+        }
         if (orderCHAR == null)
             return false;
         XLog.i(orderCHAR.name());
@@ -197,6 +200,16 @@ public class DMokoSupport extends MokoBleLib {
     public void disableAccNotify() {
         if (mBleConfig != null)
             mBleConfig.disableAccNotify();
+    }
+
+    public void enableClickEventNotify() {
+        if (mBleConfig != null)
+            mBleConfig.enableClickEventNotify();
+    }
+
+    public void disableClickEventNotify() {
+        if (mBleConfig != null)
+            mBleConfig.disableClickEventNotify();
     }
 
     public ArrayList<ExportData> exportSingleEvents;

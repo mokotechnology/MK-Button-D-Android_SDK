@@ -18,49 +18,85 @@ public class OrderTaskAssembler {
     /**
      * @Description 获取制造商
      */
-    public static OrderTask getManufacturer() {
-        GetManufacturerNameTask task = new GetManufacturerNameTask();
-        return task;
+    public static OrderTask getManufacturer(int firmwareType) {
+        if (firmwareType == 1) {
+            ParamsTask task = new ParamsTask();
+            task.getData(ParamsKeyEnum.KEY_MANUFACTURER);
+            return task;
+        } else {
+            GetManufacturerNameTask task = new GetManufacturerNameTask();
+            return task;
+        }
     }
 
     /**
      * @Description 获取设备型号
      */
-    public static OrderTask getDeviceModel() {
-        GetModelNumberTask task = new GetModelNumberTask();
-        return task;
+    public static OrderTask getDeviceModel(int firmwareType) {
+        if (firmwareType == 1) {
+            ParamsTask task = new ParamsTask();
+            task.getData(ParamsKeyEnum.KEY_MODEL_NUMBER);
+            return task;
+        } else {
+            GetModelNumberTask task = new GetModelNumberTask();
+            return task;
+        }
     }
 
     /**
      * @Description 获取生产日期
      */
-    public static OrderTask getProductDate() {
-        GetSerialNumberTask task = new GetSerialNumberTask();
-        return task;
+    public static OrderTask getProductDate(int firmwareType) {
+        if (firmwareType == 1) {
+            ParamsTask task = new ParamsTask();
+            task.getData(ParamsKeyEnum.KEY_PRODUCT_DATE);
+            return task;
+        } else {
+            GetSerialNumberTask task = new GetSerialNumberTask();
+            return task;
+        }
     }
 
     /**
      * @Description 获取硬件版本
      */
-    public static OrderTask getHardwareVersion() {
-        GetHardwareRevisionTask task = new GetHardwareRevisionTask();
-        return task;
+    public static OrderTask getHardwareVersion(int firmwareType) {
+        if (firmwareType == 1) {
+            ParamsTask task = new ParamsTask();
+            task.getData(ParamsKeyEnum.KEY_HARDWARE_REVISION);
+            return task;
+        } else {
+            GetHardwareRevisionTask task = new GetHardwareRevisionTask();
+            return task;
+        }
     }
 
     /**
      * @Description 获取固件版本
      */
-    public static OrderTask getFirmwareVersion() {
-        GetFirmwareRevisionTask task = new GetFirmwareRevisionTask();
-        return task;
+    public static OrderTask getFirmwareVersion(int firmwareType) {
+        if (firmwareType == 1) {
+            ParamsTask task = new ParamsTask();
+            task.getData(ParamsKeyEnum.KEY_FIRMWARE_REVISION);
+            return task;
+        } else {
+            GetFirmwareRevisionTask task = new GetFirmwareRevisionTask();
+            return task;
+        }
     }
 
     /**
      * @Description 获取软件版本
      */
-    public static OrderTask getSoftwareVersion() {
-        GetSoftwareRevisionTask task = new GetSoftwareRevisionTask();
-        return task;
+    public static OrderTask getSoftwareVersion(int firmwareType) {
+        if (firmwareType == 1) {
+            ParamsTask task = new ParamsTask();
+            task.getData(ParamsKeyEnum.KEY_SOFTWARE_REVISION);
+            return task;
+        } else {
+            GetSoftwareRevisionTask task = new GetSoftwareRevisionTask();
+            return task;
+        }
     }
 
 
@@ -183,6 +219,12 @@ public class OrderTaskAssembler {
         return task;
     }
 
+    public static OrderTask getBatteryPercent() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_BATTERY_PERCENT);
+        return task;
+    }
+
     /**
      * @Description 关机
      */
@@ -210,6 +252,12 @@ public class OrderTaskAssembler {
         return task;
     }
 
+    public static OrderTask setResetBattery() {
+        ParamsTask task = new ParamsTask();
+        task.setResetBattery();
+        return task;
+    }
+
     public static OrderTask setSinglePressEventClear() {
         ParamsTask task = new ParamsTask();
         task.setData(ParamsKeyEnum.KEY_SINGLE_PRESS_EVENT_CLEAR);
@@ -228,11 +276,37 @@ public class OrderTaskAssembler {
         return task;
     }
 
+    public static OrderTask getFrameType(@IntRange(from = 0, to = 3) int slot) {
+        ParamsTask task = new ParamsTask();
+        task.getFrameType(slot);
+        return task;
+    }
+
+
+    public static OrderTask setAlarmFrameType(@IntRange(from = 0, to = 3) int slot) {
+        ParamsTask task = new ParamsTask();
+        task.setAlarmFrameType(slot);
+        return task;
+    }
+
+    public static OrderTask setUidFrameType(@IntRange(from = 0, to = 3) int slot, String namespaceId, String instanceId) {
+        ParamsTask task = new ParamsTask();
+        task.setUidFrameType(slot, namespaceId, instanceId);
+        return task;
+    }
+
+    public static OrderTask setIBeaconFrameType(@IntRange(from = 0, to = 3) int slot, String uuid, int major, int minor) {
+        ParamsTask task = new ParamsTask();
+        task.setIBeaconFrameType(slot, uuid, major, minor);
+        return task;
+    }
+
     public static OrderTask getSlotParams(@IntRange(from = 0, to = 3) int slot) {
         ParamsTask task = new ParamsTask();
         task.getSlotParams(slot);
         return task;
     }
+
 
     public static OrderTask setSlotParams(@IntRange(from = 0, to = 3) int slot,
                                           @IntRange(from = 0, to = 1) int enable,
@@ -286,7 +360,7 @@ public class OrderTaskAssembler {
         return task;
     }
 
-    public static OrderTask getSlotTriggerAlarmNotifyType(@IntRange(from = 0, to = 3) int slot) {
+    public static OrderTask getSlotTriggerAlarmNotifyType(@IntRange(from = 0, to = 4) int slot) {
         ParamsTask task = new ParamsTask();
         task.getSlotTriggerAlarmNotifyType(slot);
         return task;
@@ -475,9 +549,15 @@ public class OrderTaskAssembler {
         return task;
     }
 
-    public static OrderTask getSensorType(){
+    public static OrderTask getSensorType() {
         ParamsTask task = new ParamsTask();
         task.getData(ParamsKeyEnum.KEY_SENSOR_TYPE);
+        return task;
+    }
+
+    public static OrderTask getFirmwareType() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_FIRMWARE_TYPE);
         return task;
     }
 }

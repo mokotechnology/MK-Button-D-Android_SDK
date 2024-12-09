@@ -9,6 +9,7 @@ import com.moko.ble.lib.event.OrderTaskResponseEvent;
 import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
+import com.moko.bxp.button.d.AppConstants;
 import com.moko.bxp.button.d.databinding.DActivitySystemInfoBinding;
 import com.moko.bxp.button.d.dialog.LoadingMessageDialog;
 import com.moko.support.d.DMokoSupport;
@@ -22,6 +23,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 
 public class SystemInfoActivity extends BaseActivity {
 
@@ -33,6 +35,8 @@ public class SystemInfoActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         mBind = DActivitySystemInfoBinding.inflate(getLayoutInflater());
         setContentView(mBind.getRoot());
+        int firmwareType = getIntent().getIntExtra(AppConstants.EXTRA_KEY_DEVICE_TYPE, 0);
+        mBind.rlBatteryPercent.setVisibility(firmwareType == 1 ? View.VISIBLE : View.GONE);
         EventBus.getDefault().register(this);
         if (!DMokoSupport.getInstance().isBluetoothOpen()) {
             // 蓝牙未打开，开启蓝牙
@@ -41,13 +45,16 @@ public class SystemInfoActivity extends BaseActivity {
             showSyncingProgressDialog();
             ArrayList<OrderTask> orderTasks = new ArrayList<>();
             orderTasks.add(OrderTaskAssembler.getBattery());
+            if (firmwareType == 1) {
+                orderTasks.add(OrderTaskAssembler.getBatteryPercent());
+            }
             orderTasks.add(OrderTaskAssembler.getDeviceMac());
-            orderTasks.add(OrderTaskAssembler.getDeviceModel());
-            orderTasks.add(OrderTaskAssembler.getSoftwareVersion());
-            orderTasks.add(OrderTaskAssembler.getFirmwareVersion());
-            orderTasks.add(OrderTaskAssembler.getHardwareVersion());
-            orderTasks.add(OrderTaskAssembler.getProductDate());
-            orderTasks.add(OrderTaskAssembler.getManufacturer());
+            orderTasks.add(OrderTaskAssembler.getDeviceModel(firmwareType));
+            orderTasks.add(OrderTaskAssembler.getSoftwareVersion(firmwareType));
+            orderTasks.add(OrderTaskAssembler.getFirmwareVersion(firmwareType));
+            orderTasks.add(OrderTaskAssembler.getHardwareVersion(firmwareType));
+            orderTasks.add(OrderTaskAssembler.getProductDate(firmwareType));
+            orderTasks.add(OrderTaskAssembler.getManufacturer(firmwareType));
             DMokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         }
     }
@@ -98,21 +105,65 @@ public class SystemInfoActivity extends BaseActivity {
                             if (flag == 0x00) {
                                 // read
                                 switch (configKeyEnum) {
+                                    case KEY_MANUFACTURER:
+                                        if (length > 0) {
+                                            String manufacturer = new String(Arrays.copyOfRange(value, 4, 4 + length));
+                                            mBind.tvManufacturer.setText(manufacturer);
+                                        }
+                                        break;
+                                    case KEY_FIRMWARE_REVISION:
+                                        if (length > 0) {
+                                            String firmwareVersion = new String(Arrays.copyOfRange(value, 4, 4 + length));
+                                            mBind.tvFirmwareVersion.setText(firmwareVersion);
+                                        }
+                                        break;
+                                    case KEY_SOFTWARE_REVISION:
+                                        if (length > 0) {
+                                            String softwareVersion = new String(Arrays.copyOfRange(value, 4, 4 + length));
+                                            mBind.tvSoftwareVersion.setText(softwareVersion);
+                                        }
+                                        break;
+                                    case KEY_HARDWARE_REVISION:
+                                        if (length > 0) {
+                                            String hardwareVersion = new String(Arrays.copyOfRange(value, 4, 4 + length));
+                                            mBind.tvHardwareVersion.setText(hardwareVersion);
+                                        }
+                                        break;
+                                    case KEY_MODEL_NUMBER:
+                                        if (length > 0) {
+                                            String model = new String(Arrays.copyOfRange(value, 4, 4 + length));
+                                            mBind.tvDeviceModel.setText(model);
+                                        }
+                                        break;
+                                    case KEY_PRODUCT_DATE:
+                                        if (length > 0) {
+                                            int year = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
+                                            int month = value[6] & 0xFF;
+                                            int day = value[7] & 0xFF;
+                                            mBind.tvProductDate.setText(String.format(Locale.getDefault(), "%d/%02d/%02d", year, month, day));
+                                        }
+                                        break;
+                                    case KEY_BATTERY_PERCENT:
+                                        if (length == 1) {
+                                            int percent = value[4] & 0xFF;
+                                            mBind.tvBatteryPercent.setText(String.format(Locale.getDefault(), "%d%%", percent));
+                                        }
+                                        break;
                                     case KEY_BATTERY_VOLTAGE:
                                         if (length == 2) {
                                             int battery = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
-                                            mBind.tvSoc.setText(String.format("%dmV", battery));
+                                            mBind.tvSoc.setText(String.format(Locale.getDefault(), "%dmV", battery));
                                         }
                                         break;
                                     case KEY_DEVICE_MAC:
                                         if (length == 6) {
                                             String mac = MokoUtils.bytesToHexString(Arrays.copyOfRange(value, 4, 10));
                                             StringBuffer stringBuffer = new StringBuffer(mac);
-                                            stringBuffer.insert(2,":");
-                                            stringBuffer.insert(5,":");
-                                            stringBuffer.insert(8,":");
-                                            stringBuffer.insert(11,":");
-                                            stringBuffer.insert(14,":");
+                                            stringBuffer.insert(2, ":");
+                                            stringBuffer.insert(5, ":");
+                                            stringBuffer.insert(8, ":");
+                                            stringBuffer.insert(11, ":");
+                                            stringBuffer.insert(14, ":");
                                             mBind.tvMacAddress.setText(stringBuffer.toString().toUpperCase());
                                         }
                                         break;
