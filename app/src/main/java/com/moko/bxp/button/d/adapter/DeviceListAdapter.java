@@ -27,7 +27,7 @@ public class DeviceListAdapter extends BaseQuickAdapter<AdvInfo, BaseViewHolder>
         helper.setText(R.id.tv_mac, "MAC:" + item.mac);
         helper.setText(R.id.tv_rssi, String.format("%ddBm", item.rssi));
         helper.setText(R.id.tv_interval_time, item.intervalTime == 0 ? "<->N/A" : String.format("<->%dms", item.intervalTime));
-        helper.setText(R.id.tv_battery, item.battery < 0 ? "N/A" : String.format("%dmV", item.battery));
+        helper.setText(R.id.tv_battery, item.battery < 0 ? "N/A" : (item.battery > 100 ? String.format("%dmV", item.battery) : String.format("%d%%", item.battery)));
         helper.addOnClickListener(R.id.tv_connect);
         helper.setGone(R.id.tv_connect, item.connectState > 0);
         helper.setGone(R.id.tv_device_id, !TextUtils.isEmpty(item.deviceId));

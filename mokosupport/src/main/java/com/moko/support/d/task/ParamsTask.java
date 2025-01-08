@@ -125,7 +125,7 @@ public class ParamsTask extends OrderTask {
     public void setAlarmFrameType(@IntRange(from = 0, to = 3) int slot) {
         response.responseValue = data = new byte[]{
                 (byte) 0xEA,
-                (byte) 0x00,
+                (byte) 0x01,
                 (byte) ParamsKeyEnum.KEY_FRAME_TYPE.getParamsKey(),
                 (byte) 0x02,
                 (byte) slot,
@@ -139,7 +139,7 @@ public class ParamsTask extends OrderTask {
         byte[] instanceIdBytes = MokoUtils.hex2bytes(instanceId);
         response.responseValue = data = new byte[22];
         data[0] = (byte) 0xEA;
-        data[1] = 0x01;
+        data[1] = (byte) 0x01;
         data[2] = (byte) ParamsKeyEnum.KEY_FRAME_TYPE.getParamsKey();
         data[3] = (byte) 18;
         data[4] = (byte) slot;
@@ -158,7 +158,7 @@ public class ParamsTask extends OrderTask {
         byte[] minorBytes = MokoUtils.toByteArray(minor, 2);
         response.responseValue = data = new byte[26];
         data[0] = (byte) 0xEA;
-        data[1] = 0x01;
+        data[1] = (byte) 0x01;
         data[2] = (byte) ParamsKeyEnum.KEY_FRAME_TYPE.getParamsKey();
         data[3] = (byte) 22;
         data[4] = (byte) slot;

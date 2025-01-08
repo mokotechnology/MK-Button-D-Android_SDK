@@ -235,6 +235,7 @@ public class DMainActivity extends BaseActivity implements MokoScanDeviceCallbac
                                 case KEY_SOFTWARE_REVISION:
                                     byte[] rawDataBytes = Arrays.copyOfRange(value, 4, 4 + length);
                                     String softwareVersionStr = new String(rawDataBytes).trim();
+                                    dismissLoadingProgressDialog();
                                     dismissLoadingMessageDialog();
                                     if (!softwareVersionStr.contains("BXP-B-D")) {
                                         showDeviceTypeErrorDialog();
