@@ -56,6 +56,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -74,6 +76,10 @@ public class DMainActivity extends BaseActivity implements MokoScanDeviceCallbac
     public static String PATH_LOGCAT;
 
     private int mFirmwareType;
+
+    private static final String REGEX = "^BXP-B(\\d)*-D$";
+
+    private Pattern mPatter = Pattern.compile(REGEX);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -203,7 +209,8 @@ public class DMainActivity extends BaseActivity implements MokoScanDeviceCallbac
                 case CHAR_SOFTWARE_REVISION:
                     String softwareVersion = new String(value).trim();
                     dismissLoadingMessageDialog();
-                    if (!softwareVersion.contains("BXP-B-D")) {
+                    Matcher matcher = mPatter.matcher(softwareVersion);
+                    if (!matcher.matches()) {
                         showDeviceTypeErrorDialog();
                         return;
                     }
@@ -237,7 +244,8 @@ public class DMainActivity extends BaseActivity implements MokoScanDeviceCallbac
                                     String softwareVersionStr = new String(rawDataBytes).trim();
                                     dismissLoadingProgressDialog();
                                     dismissLoadingMessageDialog();
-                                    if (!softwareVersionStr.contains("BXP-B-D")) {
+                                    Matcher m = mPatter.matcher(softwareVersionStr);
+                                    if (!m.matches()) {
                                         showDeviceTypeErrorDialog();
                                         return;
                                     }
